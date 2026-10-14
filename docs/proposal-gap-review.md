@@ -2,11 +2,11 @@
 
 ## Purpose
 
-Track differences between the combined project proposal and the revised execution plan/SDD. The repository and user-confirmed project name is ClubSphere. The proposal and older SDD still use CampusConnect; use ClubSphere in new project material and update those source documents when preparing the Design Review package.
+Track differences between the combined project proposal and the revised execution plan/SDD. ClubSphere is the confirmed project name and is now used in the proposal and system design document, as well as the repository.
 
 | Topic | Proposal | Revised plan / SDD | Current handling | Owner / next action |
 | --- | --- | --- | --- | --- |
-| Project name | CampusConnect | CampusConnect in the plan and SDD; repository is ClubSphere | Use ClubSphere in new files; align the proposal and SDD title before Design Review. | Vanshika: update; Aryan: review. |
+| Project name | ClubSphere (updated) | ClubSphere (updated); repository is ClubSphere | Name alignment is complete. | Vanshika: completed; Aryan: verify consistency during review. |
 | Database | PostgreSQL recommended; PostgreSQL/MySQL accepted. | Azure SQL / SQL Server is the execution baseline, including T-SQL and Azure SQL milestones. | Use Azure SQL provisionally because the revised plan is the current execution authority. Make the proposal and SDD consistent. | Aryan: validate data-layer fit; both: approve. |
 | Cloud provider | Any suitable cloud with managed database. | Azure deployment, Azure SQL, Blob Storage, and Key Vault/host settings. | Azure is the current delivery baseline. | Aryan: confirm feasibility and student access; Vanshika: update diagrams. |
 | File/object storage | Optional depending on hosting; proposal documents and event media are examples. | Azure Blob round-trip is a Phase 7 acceptance deliverable. | Required later per the revised plan; defer implementation until Phase 7. | Aryan: API/storage; Vanshika: upload UI and verification. |

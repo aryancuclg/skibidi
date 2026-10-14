@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This draft turns the revised execution plan and combined project proposal into an MVP requirements baseline and two Mermaid diagrams. It is for Aryan and Vanshika to review before Design Review. The project name in the repository is ClubSphere; the supplied proposal still uses CampusConnect and should be updated to the agreed name.
+This draft turns the revised execution plan and combined project proposal into an MVP requirements baseline and two Mermaid diagrams. It is for Aryan and Vanshika to review before Design Review. ClubSphere is the confirmed project name and is now used in the proposal and system design document.
 
 ## MVP scope
 
@@ -87,7 +87,7 @@ sequenceDiagram
 
 ## Decisions to confirm with Aryan
 
-1. The revised execution plan and SDD use Azure SQL, while the proposal recommends PostgreSQL (and permits PostgreSQL/MySQL). This draft uses Azure SQL as the implementation baseline because the revised plan is the working execution authority; confirm that the team accepts the resulting change to the proposal.
+1. The revised execution plan and SDD use Azure SQL, while the proposal recommends PostgreSQL (and permits PostgreSQL/MySQL). This draft uses Azure SQL as the implementation baseline because the revised plan is the working execution authority; confirm that the team accepts the proposal’s updated database recommendation.
 2. The proposal makes object storage dependent on hosting choice; the revised plan schedules Azure Blob upload/download as a required Phase 7 deliverable. Keep it out of Phase 1 implementation, but confirm the Azure choice before deployment work.
 3. The proposal mentions review of pending events, but the planned lifecycle defines faculty/HOD approval for club proposals and manager publication for events. Confirm that a separate event-approval workflow is out of MVP.
 4. The proposal includes notifications, but the plan does not assign notification delivery in the MVP schedule and treats email integration as optional. Confirm whether in-app notifications are MVP or deferred.

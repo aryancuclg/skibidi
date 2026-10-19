@@ -1,0 +1,59 @@
+{
+  "projectName": "ClubSphere",
+  "mode": "standard",
+  "branching": {
+    "git": true,
+    "strategy": "git-flow",
+    "base_branch": "develop",
+    "main_branch": "main"
+  },
+  "milestones": [
+    {
+      "name": "Design Review",
+      "tag": "design-review-v1"
+    },
+    {
+      "name": "Mid Review",
+      "date": "2026-10-28",
+      "tag": "mid-review-v1"
+    },
+    {
+      "name": "Cloud Deployment",
+      "tag": "cloud-v1"
+    },
+    {
+      "name": "Security Check",
+      "date": "2026-11-03",
+      "tag": "security-check-v1"
+    },
+    {
+      "name": "Final Submission",
+      "date": "2026-11-06",
+      "tag": "final-submission-v1"
+    }
+  ],
+  "team": {
+    "user": {
+      "name": "Aryan",
+      "scope": [
+        "Backend (Python, FastAPI, Pydantic, pytest)",
+        "Database integration & constraints (Azure SQL)",
+        "Cloud infrastructure & deployment (Docker, Azure App Service/Container Apps, Blob Storage, Key Vault, GitHub Actions)",
+        "Backend security & RBAC enforcement",
+        "OpenAPI specification maintenance (docs/openapi.json)",
+        "SQL Views for reporting/Power BI"
+      ]
+    },
+    "partner": {
+      "name": "Vanshika",
+      "scope": [
+        "Frontend (React, Vite, Tailwind CSS)",
+        "Mermaid / ER diagrams",
+        "Alembic migration authorship",
+        "Power BI dashboards",
+        "API contract / frontend-backend integration tests",
+        "Report and demo-script writing"
+      ]
+    }
+  }
+}

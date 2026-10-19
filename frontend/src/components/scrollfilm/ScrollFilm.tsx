@@ -127,6 +127,7 @@ function transformBase(pos: CaptionPos): string {
 
 export default function ScrollFilm({ onFilmEnd }: { onFilmEnd?: (ended: boolean) => void }) {
   const trackRef = useRef<HTMLDivElement>(null)
+  const stageRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const captionRefs = useRef<Array<HTMLDivElement | null>>([])
   const cueRef = useRef<HTMLDivElement>(null)
@@ -163,16 +164,23 @@ export default function ScrollFilm({ onFilmEnd }: { onFilmEnd?: (ended: boolean)
     let smooth = 0
     let lastEnded: boolean | null = null
 
+    // Respect the OS reduced-motion preference: scrub directly, no easing.
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
     const tick = (now: number) => {
       const dt = Math.min((now - lastT) / 1000, 0.5) || 0.016
       lastT = now
 
-      const max = track.offsetHeight - window.innerHeight
+      // Measure the pinned stage rather than `window.innerHeight`: on mobile the
+      // stage uses `100dvh`, so this keeps the scroll→progress mapping stable
+      // while the browser chrome collapses/expands.
+      const stageH = stageRef.current?.offsetHeight ?? window.innerHeight
+      const max = track.offsetHeight - stageH
       const scrolled = window.scrollY - track.offsetTop
       const target = max > 0 ? Math.min(1, Math.max(0, scrolled / max)) : 0
 
       // Time-based lerp: fast flicks glide, throttled tabs still converge.
-      const k = 1 - Math.exp(-dt * 14)
+      const k = reduceMotion ? 1 : 1 - Math.exp(-dt * 14)
       smooth += (target - smooth) * k
       if (Math.abs(target - smooth) < 0.0004) smooth = target
 
@@ -225,7 +233,7 @@ export default function ScrollFilm({ onFilmEnd }: { onFilmEnd?: (ended: boolean)
       </div>
 
       <div ref={trackRef} className="film-track">
-        <div className="film-stage">
+        <div ref={stageRef} className="film-stage">
           <canvas ref={canvasRef} className="film-canvas" />
           <div className="film-vignette" aria-hidden />
 

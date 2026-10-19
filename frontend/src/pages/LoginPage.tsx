@@ -49,10 +49,10 @@ export default function LoginPage() {
   }
 
   const inputClasses =
-    'w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-2.5 text-sm text-white placeholder-slate-500 outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20'
+    'w-full rounded-xl border border-slate-700 bg-slate-900 min-h-11 px-4 py-2.5 text-sm text-white placeholder-slate-500 outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20'
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950 px-4">
+    <div className="relative flex min-h-dvh items-center justify-center overflow-hidden bg-slate-950 px-4 py-10 pt-[max(2.5rem,env(safe-area-inset-top))] pb-[max(2.5rem,env(safe-area-inset-bottom))]">
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -top-32 -left-32 h-96 w-96 rounded-full bg-violet-600/20 blur-3xl" />
         <div className="absolute top-1/3 -right-32 h-96 w-96 rounded-full bg-cyan-500/10 blur-3xl" />
@@ -89,7 +89,7 @@ export default function LoginPage() {
                   setMode(tab)
                   setError(null)
                 }}
-                className={`rounded-lg px-3 py-2 text-sm font-medium transition cursor-pointer ${
+                className={`min-h-11 rounded-lg px-3 py-2 text-sm font-medium transition cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500 ${
                   mode === tab ? 'bg-violet-600 text-white shadow' : 'text-slate-400 hover:text-white'
                 }`}
               >
@@ -163,7 +163,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-500/20 transition hover:from-violet-500 hover:to-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
+              className="min-h-11 w-full rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-500/20 transition hover:from-violet-500 hover:to-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
             >
               {loading ? 'Please wait…' : isRegister ? 'Create account' : 'Sign in'}
             </button>

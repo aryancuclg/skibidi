@@ -134,7 +134,13 @@ export function createFilmScene(canvas: HTMLCanvasElement): FilmScene | null {
   }
 
   const mobile = Math.min(window.innerWidth, window.innerHeight) < 640
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mobile ? 1.5 : 2))
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  // Low-power heuristic: keep the scene but drop the expensive post pass on
+  // phones that report few cores / little memory.
+  const cores = navigator.hardwareConcurrency ?? 8
+  const memory = (navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 8
+  const lowPower = mobile && (cores <= 4 || memory <= 4)
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mobile ? (lowPower ? 1.25 : 1.5) : 2))
   renderer.toneMapping = THREE.ACESFilmicToneMapping
   renderer.toneMappingExposure = 1.05
 
@@ -400,8 +406,10 @@ export function createFilmScene(canvas: HTMLCanvasElement): FilmScene | null {
   /* ── post ───────────────────────────────────────────── */
   const composer = new EffectComposer(renderer)
   composer.addPass(new RenderPass(scene, camera))
-  const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.55, 0.6, 0.32)
-  composer.addPass(bloom)
+  // Bloom is the heaviest pass; skip it on low-power phones and lean on the
+  // emissive core + additive glows to keep the finale luminous.
+  const bloom = lowPower ? null : new UnrealBloomPass(new THREE.Vector2(1, 1), 0.55, 0.6, 0.32)
+  if (bloom) composer.addPass(bloom)
   composer.addPass(new OutputPass())
 
   /* ── state ──────────────────────────────────────────── */
@@ -427,23 +435,30 @@ export function createFilmScene(canvas: HTMLCanvasElement): FilmScene | null {
       const finale = smoothstep(0.86, 1, p)
 
       // Camera: one continuous orbit + pull-back, no cuts.
-      const azimuth = -0.55 + p * 1.5 + Math.sin(elapsed * 0.05) * 0.02
-      const radius = 4.35 + p * 3.5
+      const azimuth = -0.55 + p * 1.5 + (reduceMotion ? 0 : Math.sin(elapsed * 0.05) * 0.02)
+      // Keep the core sphere fully in frame on portrait screens: solve for the
+      // distance at which the horizontal half-FOV still covers the sphere.
+      const fovDeg = 42 - finale * 4
+      const halfWidth = Math.tan(((fovDeg * Math.PI) / 180) / 2) * camera.aspect
+      const minRadius = 1.28 / Math.max(halfWidth, 0.0001)
+      const radius = Math.max(4.35 + p * 3.5, minRadius)
       const height = 0.35 + Math.sin(p * Math.PI) * 0.45 + p * 0.95
       camera.position.set(Math.sin(azimuth) * radius, height, Math.cos(azimuth) * radius)
       camera.lookAt(0, 0.05 + p * 0.12, 0)
-      camera.fov = 42 - finale * 4
+      camera.fov = fovDeg
       camera.updateProjectionMatrix()
 
-      // Idle life.
-      root.rotation.y += dt * 0.035
-      shell.rotation.y -= dt * 0.02
-      stars.rotation.y += dt * 0.004
-      core.rotation.y -= dt * 0.15
-      const pulse = 1 + Math.sin(elapsed * 2.1) * 0.04
+      // Idle life — skipped entirely when the user prefers reduced motion.
+      if (!reduceMotion) {
+        root.rotation.y += dt * 0.035
+        shell.rotation.y -= dt * 0.02
+        stars.rotation.y += dt * 0.004
+        core.rotation.y -= dt * 0.15
+      }
+      const pulse = reduceMotion ? 1 : 1 + Math.sin(elapsed * 2.1) * 0.04
 
       // Ignition.
-      coreMat.emissiveIntensity = ignite * (2.1 + Math.sin(elapsed * 1.7) * 0.25)
+      coreMat.emissiveIntensity = ignite * (2.1 + (reduceMotion ? 0 : Math.sin(elapsed * 1.7) * 0.25))
       coreGlowMat.opacity = ignite * 0.85
       core.scale.setScalar((0.6 + ignite * 0.4) * pulse)
       coreGlow.scale.setScalar(pulse)
@@ -457,7 +472,7 @@ export function createFilmScene(canvas: HTMLCanvasElement): FilmScene | null {
       // Ring + nodes.
       ringMat.opacity = ringIn * 0.9
       nodeMat.opacity = ringIn * 0.95
-      const ringSpin = elapsed * 0.22
+      const ringSpin = reduceMotion ? 0 : elapsed * 0.22
       const pos = nodeGeo.getAttribute('position') as THREE.BufferAttribute
       for (let i = 0; i < NODE_COUNT; i++) {
         const a = nodeAngles[i] + ringSpin
@@ -476,7 +491,7 @@ export function createFilmScene(canvas: HTMLCanvasElement): FilmScene | null {
         const { link, phase } = pulseSeeds[i]
         const [a, b] = connections[link] ?? connections[0]
         if (!a || !b) continue
-        const t = (elapsed * 0.35 + phase) % 1
+        const t = reduceMotion ? phase : (elapsed * 0.35 + phase) % 1
         tmp.lerpVectors(a, b, t)
         ppos.setXYZ(i, tmp.x, tmp.y, tmp.z)
       }
@@ -486,7 +501,7 @@ export function createFilmScene(canvas: HTMLCanvasElement): FilmScene | null {
       shellMat.opacity = shellIn * 0.22 + finale * 0.06
 
       // Finale lift.
-      bloom.strength = 0.55 + ignite * 0.2 + finale * 0.5
+      if (bloom) bloom.strength = 0.55 + ignite * 0.2 + finale * 0.5
       renderer.toneMappingExposure = 1.05 + finale * 0.12
 
       composer.render()
@@ -498,7 +513,7 @@ export function createFilmScene(canvas: HTMLCanvasElement): FilmScene | null {
       camera.updateProjectionMatrix()
       renderer.setSize(width, height, false)
       composer.setSize(width, height)
-      bloom.setSize(width, height)
+      bloom?.setSize(width, height)
     },
 
     dispose() {

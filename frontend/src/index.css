@@ -54,6 +54,8 @@
 #root {
   width: 100%;
   min-height: 100vh;
+  /* Mobile browsers shrink the visual viewport as chrome hides/shows. */
+  min-height: 100dvh;
   margin: 0;
   display: flex;
   flex-direction: column;
@@ -157,10 +159,20 @@ code {
   height: 760vh;
   position: relative;
 }
+
+/* Phones: a shorter track means less thumb-scrolling between chapters, while
+   the caption windows stay fraction-based so the sequence is identical. */
+@media (max-width: 640px) {
+  .film-track {
+    height: 520vh;
+  }
+}
 .film-stage {
   position: sticky;
   top: 0;
   height: 100vh;
+  /* Dynamic viewport height keeps the pinned stage flush with mobile chrome. */
+  height: 100dvh;
   width: 100%;
   overflow: hidden;
   background: var(--film-bg);
@@ -185,6 +197,8 @@ code {
 /* ── captions ── */
 .film-caption {
   position: absolute;
+  max-width: 90vw;
+  overflow-wrap: break-word;
   z-index: 10;
   opacity: 0;
   pointer-events: none;
@@ -245,6 +259,8 @@ code {
 .cap-bottom {
   left: 50%;
   bottom: 9vh;
+  /* Keep the final title + CTA clear of the home indicator on notched phones. */
+  bottom: calc(9vh + env(safe-area-inset-bottom, 0px));
   transform: translateX(-50%);
   text-align: center;
 }
@@ -266,7 +282,20 @@ code {
   .film-caption p {
     max-width: none;
   }
+  /* Centered/top/bottom captions get an explicit width so long copy wraps
+     inside the viewport instead of stretching past it or under the sphere. */
+  .film-caption.cap-center,
+  .film-caption.cap-top,
+  .film-caption.cap-bottom {
+    width: min(88vw, 34rem);
+    padding: 0 4vw;
+  }
+  .film-caption .film-h1 {
+    /* Keep the orbital title large but never wider than the screen. */
+    font-size: clamp(34px, 13vw, 60px);
+  }
 }
+
 
 /* ── scroll cue ── */
 .film-cue {
@@ -418,5 +447,9 @@ code {
 @media (prefers-reduced-motion: reduce) {
   .landing [data-reveal] {
     transition: none;
+  }
+  /* Stop the looping scroll-cue bounce. */
+  .film-cue::after {
+    animation: none;
   }
 }

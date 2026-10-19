@@ -91,12 +91,12 @@ export default function EventsPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search events by title or venue…"
-          className="w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-2.5 text-sm text-white placeholder-slate-500 outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 sm:max-w-sm"
+          className="w-full rounded-xl border border-slate-700 bg-slate-900 min-h-11 px-4 py-2.5 text-sm text-white placeholder-slate-500 outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 sm:max-w-sm"
         />
         <select
           value={status}
           onChange={(e) => setStatus(e.target.value)}
-          className="w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-2.5 text-sm text-white outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 sm:w-56"
+          className="w-full rounded-xl border border-slate-700 bg-slate-900 min-h-11 px-4 py-2.5 text-sm text-white outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 sm:w-56"
         >
           <option value="published">Published</option>
           <option value="completed">Completed</option>

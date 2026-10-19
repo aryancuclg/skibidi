@@ -11,7 +11,7 @@ export function Spinner({ label = 'Loading' }: { label?: string }) {
 
 export function ErrorNote({ message }: { message: string }) {
   return (
-    <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-300">
+    <div className="break-words rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-300">
       {message}
     </div>
   )
@@ -19,7 +19,7 @@ export function ErrorNote({ message }: { message: string }) {
 
 export function SuccessNote({ message }: { message: string }) {
   return (
-    <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300">
+    <div className="break-words rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300">
       {message}
     </div>
   )
@@ -67,11 +67,13 @@ export function PageHeader({ title, subtitle, icon }: { title: string; subtitle?
     <header className="mb-8">
       <div className="flex items-center gap-3">
         {icon && (
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-violet-500/25 bg-violet-500/10 text-xl">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-violet-500/25 bg-violet-500/10 text-xl">
             {icon}
           </div>
         )}
-        <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">{title}</h1>
+        <h1 className="min-w-0 break-words text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+          {title}
+        </h1>
       </div>
       {subtitle && <p className="mt-2 max-w-2xl text-sm text-slate-400">{subtitle}</p>}
     </header>

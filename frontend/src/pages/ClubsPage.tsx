@@ -59,7 +59,7 @@ export default function ClubsPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search clubs by name or description…"
-          className="w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-2.5 text-sm text-white placeholder-slate-500 outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 sm:max-w-sm"
+          className="w-full rounded-xl border border-slate-700 bg-slate-900 min-h-11 px-4 py-2.5 text-sm text-white placeholder-slate-500 outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 sm:max-w-sm"
         />
         <div className="sm:w-96">
           <ProgramSelector

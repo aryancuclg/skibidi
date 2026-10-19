@@ -39,6 +39,13 @@ const VOICES: Array<[string, string]> = [
   ['“Audit week stopped being a search party.”', 'Program office'],
 ]
 
+const NAV_LINKS: { href: string; label: string }[] = [
+  { href: '#manifesto', label: 'Overview' },
+  { href: '#origin', label: 'Workflow' },
+  { href: '#numbers', label: 'Numbers' },
+  { href: '#voices', label: 'Voices' },
+]
+
 function BrandMark({ size = 'md' }: { size?: 'md' | 'sm' }) {
   const box = size === 'md' ? 'h-9 w-9' : 'h-8 w-8'
   const inner = size === 'md' ? 'rounded-[11px] text-sm' : 'rounded-[9px] text-xs'
@@ -53,6 +60,7 @@ function BrandMark({ size = 'md' }: { size?: 'md' | 'sm' }) {
 
 export default function LandingPage() {
   const [navVisible, setNavVisible] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
   useReveal(rootRef)
 
@@ -62,7 +70,20 @@ export default function LandingPage() {
   }, [])
 
   // Stable callback — ScrollFilm builds its scene once on mount.
-  const handleFilmEnd = useCallback((ended: boolean) => setNavVisible(ended), [])
+  const handleFilmEnd = useCallback((ended: boolean) => {
+    setNavVisible(ended)
+    if (!ended) setMenuOpen(false)
+  }, [])
+
+  // Escape dismisses the compact nav menu.
+  useEffect(() => {
+    if (!menuOpen) return
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setMenuOpen(false)
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [menuOpen])
 
   return (
     <div ref={rootRef} className="landing">
@@ -72,25 +93,61 @@ export default function LandingPage() {
           navVisible ? 'translate-y-0' : '-translate-y-full'
         }`}
       >
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-          <a href="#film-top" className="flex items-center gap-3">
+        <div className="mx-auto flex min-h-16 max-w-6xl items-center justify-between gap-2 px-4 pt-[env(safe-area-inset-top)] sm:px-6">
+          <a href="#film-top" className="flex min-w-0 items-center gap-3">
             <BrandMark size="sm" />
-            <span className="bg-gradient-to-r from-violet-400 to-cyan-300 bg-clip-text text-lg font-bold text-transparent">
+            <span className="truncate bg-gradient-to-r from-violet-400 to-cyan-300 bg-clip-text text-lg font-bold text-transparent">
               ClubSphere
             </span>
           </a>
           <nav className="hidden items-center gap-8 text-sm text-slate-400 sm:flex">
-            <a className="transition hover:text-white" href="#manifesto">Overview</a>
-            <a className="transition hover:text-white" href="#origin">Workflow</a>
-            <a className="transition hover:text-white" href="#numbers">Numbers</a>
-            <a className="transition hover:text-white" href="#voices">Voices</a>
+            {NAV_LINKS.map((link) => (
+              <a key={link.href} className="transition hover:text-white" href={link.href}>
+                {link.label}
+              </a>
+            ))}
           </nav>
-          <Link
-            to="/login"
-            className="rounded-full border border-violet-500/60 px-5 py-2 text-sm font-medium text-violet-300 transition hover:bg-violet-500 hover:text-white"
-          >
-            Sign in
-          </Link>
+          <div className="flex shrink-0 items-center gap-2">
+            <Link
+              to="/login"
+              className="rounded-full border border-violet-500/60 px-4 py-2 text-sm font-medium text-violet-300 transition hover:bg-violet-500 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500 sm:px-5"
+            >
+              Sign in
+            </Link>
+            <button
+              type="button"
+              onClick={() => setMenuOpen((open) => !open)}
+              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={menuOpen}
+              aria-controls="landing-mobile-menu"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-700 text-slate-300 transition hover:border-slate-500 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500 cursor-pointer sm:hidden"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="h-5 w-5" aria-hidden="true">
+                {menuOpen ? <path d="M6 6l12 12M18 6L6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {/* Phones: the section links are hidden above `sm`, so surface them here. */}
+        <div
+          id="landing-mobile-menu"
+          className={`overflow-hidden border-t border-white/5 transition-[max-height,opacity] duration-300 sm:hidden ${
+            menuOpen ? 'max-h-72 opacity-100' : 'max-h-0 opacity-0'
+          }`}
+        >
+          <nav className="mx-auto flex max-w-6xl flex-col px-3 py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
+            {NAV_LINKS.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={() => setMenuOpen(false)}
+                className="rounded-lg px-3 py-3 text-sm font-medium text-slate-300 transition hover:bg-white/5 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500"
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
         </div>
       </header>
 
@@ -102,19 +159,19 @@ export default function LandingPage() {
       {/* ── brand page ───────────────────────────────────── */}
       <main className="relative z-10 bg-[#05050a]">
         {/* Manifesto */}
-        <section id="manifesto" className="mx-auto max-w-5xl px-6 py-40 text-center">
+        <section id="manifesto" className="mx-auto max-w-5xl scroll-mt-24 px-5 py-24 text-center sm:px-6 sm:py-40">
           <h2 data-reveal className="display-xl text-white">
             Every club deserves an <span className="text-violet-400">operating system.</span>
           </h2>
-          <p data-reveal className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-slate-400">
+          <p data-reveal className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-slate-400 sm:mt-8 sm:text-lg">
             Clubs form, propose, approve, meet, audit. ClubSphere is the single
             orbit all of it shares.
           </p>
         </section>
 
         {/* Origin */}
-        <section id="origin" className="border-t border-white/5">
-          <div className="mx-auto grid max-w-6xl items-center gap-14 px-6 py-28 md:grid-cols-2">
+        <section id="origin" className="scroll-mt-24 border-t border-white/5">
+          <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 py-16 sm:gap-14 sm:px-6 sm:py-28 md:grid-cols-2">
             <div data-reveal>
               <p className="eyebrow">Origin</p>
               <h2 className="display-lg text-white">Why the sphere exists</h2>
@@ -134,9 +191,9 @@ export default function LandingPage() {
         </section>
 
         {/* Craft chapters */}
-        <section id="craft" className="border-t border-white/5">
-          <div className="mx-auto max-w-6xl px-6">
-            <div className="grid items-center gap-14 py-24 md:grid-cols-2">
+        <section id="craft" className="scroll-mt-24 border-t border-white/5">
+          <div className="mx-auto max-w-6xl px-5 sm:px-6">
+            <div className="grid items-center gap-10 py-14 sm:gap-14 sm:py-24 md:grid-cols-2">
               <Still name="still-approvals" alt="Meridian lines drawing across the sphere" />
               <div data-reveal>
                 <p className="eyebrow">Approvals</p>
@@ -149,7 +206,7 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className="grid items-center gap-14 py-24 md:grid-cols-2">
+            <div className="grid items-center gap-10 py-14 sm:gap-14 sm:py-24 md:grid-cols-2">
               <div data-reveal className="md:order-1">
                 <p className="eyebrow">Attendance</p>
                 <h2 className="display-lg text-white">Attendance that proves itself.</h2>
@@ -162,7 +219,7 @@ export default function LandingPage() {
               <Still name="still-attendance" alt="The member constellation with event pulses" />
             </div>
 
-            <div className="grid items-center gap-14 py-24 md:grid-cols-2">
+            <div className="grid items-center gap-10 py-14 sm:gap-14 sm:py-24 md:grid-cols-2">
               <Still name="still-programs" alt="The compliance shell assembling around the sphere" />
               <div data-reveal>
                 <p className="eyebrow">Academics</p>
@@ -179,8 +236,8 @@ export default function LandingPage() {
         </section>
 
         {/* Numbers */}
-        <section id="numbers" className="border-t border-white/5">
-          <div className="mx-auto grid max-w-6xl grid-cols-2 gap-10 px-6 py-28 md:grid-cols-4">
+        <section id="numbers" className="scroll-mt-24 border-t border-white/5">
+          <div className="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-5 py-16 sm:gap-10 sm:px-6 sm:py-28 md:grid-cols-4">
             {STATS.map(([n, label]) => (
               <div key={label} data-reveal className="text-center">
                 <div className="stat-num bg-gradient-to-br from-violet-300 to-cyan-200 bg-clip-text text-transparent">
@@ -193,14 +250,14 @@ export default function LandingPage() {
         </section>
 
         {/* Specifications */}
-        <section id="specs" className="border-t border-white/5">
-          <div className="mx-auto max-w-4xl px-6 py-28">
-            <h2 data-reveal className="display-lg mb-12 text-center text-white">
+        <section id="specs" className="scroll-mt-24 border-t border-white/5">
+          <div className="mx-auto max-w-4xl px-5 py-16 sm:px-6 sm:py-28">
+            <h2 data-reveal className="display-lg mb-10 text-center text-white sm:mb-12">
               Specifications
             </h2>
             <dl data-reveal className="divide-y divide-white/5 rounded-2xl border border-white/10 bg-white/[0.02]">
               {SPECS.map(([k, v]) => (
-                <div key={k} className="grid gap-1 px-6 py-4 sm:grid-cols-3 sm:gap-6">
+                <div key={k} className="grid gap-1 px-5 py-4 sm:grid-cols-3 sm:gap-6 sm:px-6">
                   <dt className="text-sm uppercase tracking-[0.16em] text-slate-500">{k}</dt>
                   <dd className="text-sm text-slate-300 sm:col-span-2">{v}</dd>
                 </div>
@@ -210,10 +267,10 @@ export default function LandingPage() {
         </section>
 
         {/* Voices */}
-        <section id="voices" className="border-t border-white/5">
-          <div className="mx-auto grid max-w-6xl gap-10 px-6 py-28 md:grid-cols-3">
+        <section id="voices" className="scroll-mt-24 border-t border-white/5">
+          <div className="mx-auto grid max-w-6xl gap-8 px-5 py-16 sm:gap-10 sm:px-6 sm:py-28 md:grid-cols-3">
             {VOICES.map(([quote, who]) => (
-              <blockquote key={who} data-reveal className="rounded-2xl border border-white/10 bg-white/[0.02] p-8">
+              <blockquote key={who} data-reveal className="rounded-2xl border border-white/10 bg-white/[0.02] p-6 sm:p-8">
                 <p className="text-lg leading-snug text-slate-200">{quote}</p>
                 <footer className="mt-5 text-sm text-slate-500">— {who}</footer>
               </blockquote>
@@ -222,9 +279,9 @@ export default function LandingPage() {
         </section>
 
         {/* Gallery */}
-        <section id="gallery" className="border-t border-white/5">
-          <div className="mx-auto max-w-6xl px-6 py-28">
-            <h2 data-reveal className="display-lg mb-12 text-center text-white">
+        <section id="gallery" className="scroll-mt-24 border-t border-white/5">
+          <div className="mx-auto max-w-6xl px-5 py-16 sm:px-6 sm:py-28">
+            <h2 data-reveal className="display-lg mb-10 text-center text-white sm:mb-12">
               Inside the sphere.
             </h2>
             <div className="grid gap-6 md:grid-cols-3">
@@ -237,7 +294,7 @@ export default function LandingPage() {
 
         {/* Closing CTA */}
         <section className="border-t border-white/5">
-          <div className="cta-band mx-auto max-w-4xl px-6 py-36 text-center">
+          <div className="cta-band mx-auto max-w-4xl px-5 py-20 text-center sm:px-6 sm:py-36">
             <h2 data-reveal className="display-xl text-white">
               One sphere. <span className="text-violet-400">Every activity.</span>
             </h2>
@@ -255,7 +312,7 @@ export default function LandingPage() {
 
         {/* Footer */}
         <footer className="border-t border-white/10 bg-black/40">
-          <div className="mx-auto grid max-w-6xl gap-12 px-6 py-16 sm:grid-cols-2 md:grid-cols-4">
+          <div className="mx-auto grid max-w-6xl gap-10 px-5 py-12 sm:gap-12 sm:px-6 sm:py-16 sm:grid-cols-2 md:grid-cols-4">
             <div>
               <div className="flex items-center gap-3">
                 <BrandMark />

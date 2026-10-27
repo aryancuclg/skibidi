@@ -49,38 +49,38 @@ export default function LoginPage() {
   }
 
   const inputClasses =
-    'w-full rounded-xl border border-slate-700 bg-slate-900 min-h-11 px-4 py-2.5 text-sm text-white placeholder-slate-500 outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20'
+    'w-full rounded-xl border border-rose/30 bg-white min-h-11 px-4 py-2.5 text-sm text-bean placeholder-rose outline-none transition focus:border-blood focus:ring-2 focus:ring-blood/20'
 
   return (
-    <div className="relative flex min-h-dvh items-center justify-center overflow-hidden bg-slate-950 px-4 py-10 pt-[max(2.5rem,env(safe-area-inset-top))] pb-[max(2.5rem,env(safe-area-inset-bottom))]">
+    <div className="relative flex min-h-dvh items-center justify-center overflow-hidden bg-white px-4 py-10 pt-[max(2.5rem,env(safe-area-inset-top))] pb-[max(2.5rem,env(safe-area-inset-bottom))]">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-32 -left-32 h-96 w-96 rounded-full bg-violet-600/20 blur-3xl" />
-        <div className="absolute top-1/3 -right-32 h-96 w-96 rounded-full bg-cyan-500/10 blur-3xl" />
-        <div className="absolute -bottom-32 left-1/3 h-96 w-96 rounded-full bg-indigo-600/20 blur-3xl" />
+        <div className="absolute -top-32 -left-32 h-96 w-96 rounded-full bg-blood/20 blur-3xl" />
+        <div className="absolute top-1/3 -right-32 h-96 w-96 rounded-full bg-olive/10 blur-3xl" />
+        <div className="absolute -bottom-32 left-1/3 h-96 w-96 rounded-full bg-blood/20 blur-3xl" />
       </div>
 
       <Link
         to="/"
-        className="absolute top-5 left-5 z-10 text-sm text-slate-500 transition hover:text-slate-300"
+        className="absolute top-5 left-5 z-10 text-sm text-olive transition hover:text-bean"
       >
         ← ClubSphere home
       </Link>
 
       <div className="relative z-10 w-full max-w-md">
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-tr from-violet-600 via-indigo-600 to-cyan-400 p-[1px] shadow-lg shadow-violet-500/20">
-            <span className="text-lg font-black text-transparent bg-clip-text bg-gradient-to-tr from-violet-300 to-cyan-200">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-vanilla p-[1px] shadow-lg shadow-blood/20">
+            <span className="text-lg font-black text-blood bg-vanilla ">
               CS
             </span>
           </div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-white">ClubSphere</h1>
-          <p className="mt-2 text-sm text-slate-400">
+          <h1 className="text-3xl font-extrabold tracking-tight text-bean">ClubSphere</h1>
+          <p className="mt-2 text-sm text-olive">
             University Club &amp; Activity Lifecycle Management Platform
           </p>
         </div>
 
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 shadow-2xl backdrop-blur sm:p-8">
-          <div className="mb-6 grid grid-cols-2 gap-1 rounded-xl bg-slate-950/70 p-1">
+        <div className="rounded-2xl border border-rose/30 bg-white p-6 shadow-2xl backdrop-blur sm:p-8">
+          <div className="mb-6 grid grid-cols-2 gap-1 rounded-xl bg-white p-1">
             {(['login', 'register'] as const).map((tab) => (
               <button
                 key={tab}
@@ -89,8 +89,8 @@ export default function LoginPage() {
                   setMode(tab)
                   setError(null)
                 }}
-                className={`min-h-11 rounded-lg px-3 py-2 text-sm font-medium transition cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500 ${
-                  mode === tab ? 'bg-violet-600 text-white shadow' : 'text-slate-400 hover:text-white'
+                className={`min-h-11 rounded-lg px-3 py-2 text-sm font-medium transition cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blood ${
+                  mode === tab ? 'bg-blood text-white shadow' : 'text-olive hover:text-bean'
                 }`}
               >
                 {tab === 'login' ? 'Sign in' : 'Create account'}
@@ -101,7 +101,7 @@ export default function LoginPage() {
           <form onSubmit={(e) => void handleSubmit(e)} className="space-y-4">
             {isRegister && (
               <div>
-                <label htmlFor="full-name" className="mb-1.5 block text-xs font-medium text-slate-400">
+                <label htmlFor="full-name" className="mb-1.5 block text-xs font-medium text-olive">
                   Full name
                 </label>
                 <input
@@ -128,7 +128,7 @@ export default function LoginPage() {
             )}
 
             <div>
-              <label htmlFor="email" className="mb-1.5 block text-xs font-medium text-slate-400">
+              <label htmlFor="email" className="mb-1.5 block text-xs font-medium text-olive">
                 University email
               </label>
               <input
@@ -143,7 +143,7 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label htmlFor="password" className="mb-1.5 block text-xs font-medium text-slate-400">
+              <label htmlFor="password" className="mb-1.5 block text-xs font-medium text-olive">
                 Password
               </label>
               <input
@@ -163,14 +163,14 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="min-h-11 w-full rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-500/20 transition hover:from-violet-500 hover:to-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
+              className="min-h-11 w-full rounded-xl bg-vanilla px-4 py-2.5 text-sm font-semibold text-bean shadow-lg shadow-blood/20 transition hover:hover:focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blood disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
             >
               {loading ? 'Please wait…' : isRegister ? 'Create account' : 'Sign in'}
             </button>
           </form>
 
-          <p className="mt-5 text-center text-xs leading-relaxed text-slate-500">
-            New accounts start as <span className="text-slate-300">Student</span>. Roles such as Club
+          <p className="mt-5 text-center text-xs leading-relaxed text-olive">
+            New accounts start as <span className="text-bean">Student</span>. Roles such as Club
             Manager, Faculty Advisor, HOD and Administrator are assigned by an administrator.
           </p>
         </div>

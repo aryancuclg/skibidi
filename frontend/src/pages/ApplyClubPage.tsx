@@ -100,7 +100,7 @@ export default function ApplyClubPage() {
   }
 
   const inputClasses =
-    'w-full rounded-xl border border-slate-700 bg-slate-900 min-h-11 px-4 py-2.5 text-sm text-white placeholder-slate-500 outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20'
+    'w-full rounded-xl border border-rose/30 bg-white min-h-11 px-4 py-2.5 text-sm text-bean placeholder-rose outline-none transition focus:border-blood focus:ring-2 focus:ring-blood/20'
 
   return (
     <div>
@@ -112,16 +112,16 @@ export default function ApplyClubPage() {
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         {/* Submission form */}
-        <section className="h-fit rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
-          <h2 className="text-base font-bold text-white">New club proposal</h2>
-          <p className="mt-1 text-xs text-slate-400">
+        <section className="h-fit rounded-2xl border border-rose/30 bg-white p-6">
+          <h2 className="text-base font-bold text-bean">New club proposal</h2>
+          <p className="mt-1 text-xs text-olive">
             Fields marked required must be completed before submitting.
           </p>
 
           <form onSubmit={(e) => void handleSubmit(e)} className="mt-5 space-y-4">
             <div>
-              <label htmlFor="proposed-name" className="mb-1.5 block text-xs font-medium text-slate-400">
-                Proposed club name <span className="text-rose-400">*</span>
+              <label htmlFor="proposed-name" className="mb-1.5 block text-xs font-medium text-olive">
+                Proposed club name <span className="text-blood">*</span>
               </label>
               <input
                 id="proposed-name"
@@ -145,8 +145,8 @@ export default function ApplyClubPage() {
             />
 
             <div>
-              <label htmlFor="description" className="mb-1.5 block text-xs font-medium text-slate-400">
-                Purpose &amp; activities <span className="text-rose-400">*</span>
+              <label htmlFor="description" className="mb-1.5 block text-xs font-medium text-olive">
+                Purpose &amp; activities <span className="text-blood">*</span>
               </label>
               <textarea
                 id="description"
@@ -158,7 +158,7 @@ export default function ApplyClubPage() {
                 placeholder="Describe the club's mission, the activities it will run, and the students it aims to serve."
                 className={`${inputClasses} resize-y`}
               />
-              <p className="mt-1 text-right text-[11px] text-slate-500">
+              <p className="mt-1 text-right text-[11px] text-olive">
                 {description.trim().length}/{DESCRIPTION_MIN} characters minimum
               </p>
             </div>
@@ -169,7 +169,7 @@ export default function ApplyClubPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-500/20 transition hover:from-violet-500 hover:to-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
+              className="w-full rounded-xl bg-vanilla px-4 py-2.5 text-sm font-semibold text-bean shadow-lg shadow-blood/20 transition hover:hover:disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
             >
               {submitting ? 'Submitting…' : 'Submit proposal'}
             </button>
@@ -178,8 +178,8 @@ export default function ApplyClubPage() {
 
         {/* Status of previously submitted proposals */}
         <section>
-          <h2 className="text-base font-bold text-white">Your proposals</h2>
-          <p className="mt-1 text-xs text-slate-400">
+          <h2 className="text-base font-bold text-bean">Your proposals</h2>
+          <p className="mt-1 text-xs text-olive">
             Approval history for every club you have proposed.
           </p>
 
@@ -195,12 +195,12 @@ export default function ApplyClubPage() {
               proposals.map((proposal) => (
                 <article
                   key={proposal.proposal_id}
-                  className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5"
+                  className="rounded-2xl border border-rose/30 bg-white p-5"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <h3 className="text-sm font-bold text-white">{proposal.proposed_name}</h3>
-                      <p className="mt-0.5 text-xs text-slate-500">
+                      <h3 className="text-sm font-bold text-bean">{proposal.proposed_name}</h3>
+                      <p className="mt-0.5 text-xs text-olive">
                         {proposal.program_name ?? 'Unknown program'} • Submitted{' '}
                         {formatDate(proposal.submitted_at)}
                       </p>
@@ -208,23 +208,23 @@ export default function ApplyClubPage() {
                     <StatusBadge status={proposal.status} />
                   </div>
 
-                  <p className="mt-3 text-xs leading-relaxed text-slate-400">{proposal.description}</p>
+                  <p className="mt-3 text-xs leading-relaxed text-olive">{proposal.description}</p>
 
                   {proposal.approvals.length > 0 ? (
-                    <ol className="mt-4 space-y-2 border-t border-slate-800 pt-4">
+                    <ol className="mt-4 space-y-2 border-t border-rose/30 pt-4">
                       {proposal.approvals.map((approval) => (
                         <li key={approval.approval_id} className="text-xs">
                           <div className="flex flex-wrap items-center gap-2">
-                            <span className="font-semibold uppercase tracking-wide text-slate-300">
+                            <span className="font-semibold uppercase tracking-wide text-bean">
                               {approval.stage}
                             </span>
                             <StatusBadge status={approval.decision === 'approve' ? 'approved' : approval.decision} />
-                            <span className="text-slate-500">
+                            <span className="text-olive">
                               by {approval.reviewer_name ?? 'Reviewer'} on {formatDate(approval.decided_at)}
                             </span>
                           </div>
                           {approval.comment && (
-                            <p className="mt-1 rounded-lg bg-slate-950/70 px-3 py-2 text-slate-400">
+                            <p className="mt-1 rounded-lg bg-white px-3 py-2 text-olive">
                               “{approval.comment}”
                             </p>
                           )}
@@ -232,7 +232,7 @@ export default function ApplyClubPage() {
                       ))}
                     </ol>
                   ) : (
-                    <p className="mt-4 border-t border-slate-800 pt-4 text-xs text-slate-500">
+                    <p className="mt-4 border-t border-rose/30 pt-4 text-xs text-olive">
                       Awaiting first review by a Faculty Advisor.
                     </p>
                   )}

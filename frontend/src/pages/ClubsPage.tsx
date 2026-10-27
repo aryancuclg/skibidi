@@ -59,7 +59,7 @@ export default function ClubsPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search clubs by name or description…"
-          className="w-full rounded-xl border border-slate-700 bg-slate-900 min-h-11 px-4 py-2.5 text-sm text-white placeholder-slate-500 outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 sm:max-w-sm"
+          className="w-full rounded-xl border border-rose/30 bg-white min-h-11 px-4 py-2.5 text-sm text-bean placeholder-rose outline-none transition focus:border-blood focus:ring-2 focus:ring-blood/20 sm:max-w-sm"
         />
         <div className="sm:w-96">
           <ProgramSelector
@@ -85,34 +85,34 @@ export default function ClubsPage() {
           {clubs.map((club) => (
             <article
               key={club.club_id}
-              className="flex flex-col rounded-2xl border border-slate-800 bg-slate-900/60 p-5 transition hover:border-violet-500/40"
+              className="flex flex-col rounded-2xl border border-rose/30 bg-white p-5 transition hover:border-blood/40"
             >
               <div className="flex items-start justify-between gap-3">
-                <h2 className="text-lg font-bold text-white">{club.name}</h2>
+                <h2 className="text-lg font-bold text-bean">{club.name}</h2>
                 <StatusBadge status={club.status} />
               </div>
 
-              <p className="mt-1 text-xs font-medium text-violet-300">
+              <p className="mt-1 text-xs font-medium text-blood">
                 {club.program_name ?? 'Unassigned program'}
               </p>
 
-              <p className="mt-3 flex-1 text-sm leading-relaxed text-slate-400">
+              <p className="mt-3 flex-1 text-sm leading-relaxed text-olive">
                 {club.description?.trim() || 'No description has been provided for this club yet.'}
               </p>
 
-              <dl className="mt-4 grid grid-cols-2 gap-3 border-t border-slate-800 pt-4 text-xs">
+              <dl className="mt-4 grid grid-cols-2 gap-3 border-t border-rose/30 pt-4 text-xs">
                 <div>
-                  <dt className="text-slate-500">Members</dt>
-                  <dd className="mt-0.5 text-base font-semibold text-white">{club.member_count ?? 0}</dd>
+                  <dt className="text-olive">Members</dt>
+                  <dd className="mt-0.5 text-base font-semibold text-bean">{club.member_count ?? 0}</dd>
                 </div>
                 <div>
-                  <dt className="text-slate-500">Chartered</dt>
-                  <dd className="mt-0.5 font-medium text-slate-300">{formatDate(club.created_at)}</dd>
+                  <dt className="text-olive">Chartered</dt>
+                  <dd className="mt-0.5 font-medium text-bean">{formatDate(club.created_at)}</dd>
                 </div>
               </dl>
 
-              <p className="mt-3 text-xs text-slate-500">
-                Managed by <span className="font-medium text-slate-300">{club.manager_name ?? '—'}</span>
+              <p className="mt-3 text-xs text-olive">
+                Managed by <span className="font-medium text-bean">{club.manager_name ?? '—'}</span>
               </p>
             </article>
           ))}

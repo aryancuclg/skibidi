@@ -12,6 +12,7 @@
  *   0.86–1.00 finale — bloom, pull-back, full mix
  */
 import * as THREE from 'three'
+import { createNewspaperTexture } from '../newspaperTexture'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
@@ -26,9 +27,9 @@ export interface FilmScene {
 }
 
 const TAU = Math.PI * 2
-const VIOLET = 0xa855f7
-const VIOLET_BRIGHT = 0xc084fc
-const CYAN = 0x22d3ee
+const BLOOD = 0x74070e
+const ROSE = 0x947268
+const OLIVE = 0x45462a
 
 function smoothstep(a: number, b: number, x: number): number {
   const t = Math.min(1, Math.max(0, (x - a) / (b - a)))
@@ -43,7 +44,8 @@ function makeGlowTexture(): THREE.CanvasTexture {
   const ctx = canvas.getContext('2d')!
   const grad = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2)
   grad.addColorStop(0, 'rgba(255,255,255,1)')
-  grad.addColorStop(0.22, 'rgba(255,255,255,0.6)')
+  grad.addColorStop(0.5, 'rgba(255,255,255,1)')
+  grad.addColorStop(0.7, 'rgba(255,255,255,0.85)')
   grad.addColorStop(1, 'rgba(255,255,255,0)')
   ctx.fillStyle = grad
   ctx.fillRect(0, 0, size, size)
@@ -145,8 +147,8 @@ export function createFilmScene(canvas: HTMLCanvasElement): FilmScene | null {
   renderer.toneMappingExposure = 1.05
 
   const scene = new THREE.Scene()
-  scene.background = new THREE.Color(0x05050a)
-  scene.fog = new THREE.FogExp2(0x05050a, 0.045)
+  scene.background = new THREE.Color(0xffffff)
+  scene.fog = new THREE.FogExp2(0xffffff, 0.009)
 
   const camera = new THREE.PerspectiveCamera(42, 16 / 9, 0.1, 80)
   camera.position.set(0, 0.4, 4.4)
@@ -165,15 +167,15 @@ export function createFilmScene(canvas: HTMLCanvasElement): FilmScene | null {
   }
 
   /* ── lights ─────────────────────────────────────────── */
-  scene.add(new THREE.AmbientLight(0x1a1430, 0.6))
-  const key = new THREE.DirectionalLight(0xdfe8ff, 1.6)
+  scene.add(new THREE.AmbientLight(0xffffff, 1.5))
+  const key = new THREE.DirectionalLight(0xffffff, 1.8)
   key.position.set(-3, 4, 2.5)
-  const rim = new THREE.DirectionalLight(0x7c3aed, 2.4)
+  const rim = new THREE.DirectionalLight(0xf4e3b2, 0.6)
   rim.position.set(3.5, -1.2, -3)
-  const cyanHint = new THREE.DirectionalLight(CYAN, 0.55)
+  const cyanHint = new THREE.DirectionalLight(OLIVE, 0.55)
   cyanHint.position.set(2.4, 2.2, -3.6)
   scene.add(key, rim, cyanHint)
-  const coreLight = new THREE.PointLight(VIOLET, 0, 9, 2)
+  const coreLight = new THREE.PointLight(BLOOD, 0, 9, 2)
   scene.add(coreLight)
 
   /* ── root group (everything scrolls around this) ────── */
@@ -181,15 +183,17 @@ export function createFilmScene(canvas: HTMLCanvasElement): FilmScene | null {
   root.rotation.x = -0.1
   scene.add(root)
 
-  // Obsidian sphere
+  // Newspaper globe; retain the original scroll camera and chapter choreography.
+  const newspaperTexture = track(createNewspaperTexture())
+  newspaperTexture.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy())
   const sphereGeo = track(new THREE.SphereGeometry(1, 96, 64))
   const sphereMat = track(
     new THREE.MeshPhysicalMaterial({
-      color: 0x0b0b14,
-      metalness: 0.72,
-      roughness: 0.24,
-      clearcoat: 0.65,
-      clearcoatRoughness: 0.28,
+      map: newspaperTexture,
+      color: 0xffffff,
+      metalness: 0,
+      roughness: 0.9,
+      clearcoat: 0,
     }),
   )
   const sphere = new THREE.Mesh(sphereGeo, sphereMat)
@@ -199,7 +203,7 @@ export function createFilmScene(canvas: HTMLCanvasElement): FilmScene | null {
   const rimMat = track(
     new THREE.ShaderMaterial({
       uniforms: {
-        uColor: { value: new THREE.Color(VIOLET) },
+        uColor: { value: new THREE.Color(BLOOD) },
         uIntensity: { value: 0.55 },
       },
       vertexShader: `
@@ -217,7 +221,7 @@ export function createFilmScene(canvas: HTMLCanvasElement): FilmScene | null {
           gl_FragColor = vec4(uColor, f * uIntensity);
         }`,
       transparent: true,
-      blending: THREE.AdditiveBlending,
+      blending: THREE.NormalBlending,
       depthWrite: false,
     }),
   )
@@ -227,8 +231,8 @@ export function createFilmScene(canvas: HTMLCanvasElement): FilmScene | null {
   // Glowing core (ignites in chapter 2)
   const coreMat = track(
     new THREE.MeshStandardMaterial({
-      color: 0x2a1046,
-      emissive: new THREE.Color(VIOLET),
+      color: 0x74070e,
+      emissive: new THREE.Color(BLOOD),
       emissiveIntensity: 0,
       roughness: 0.4,
     }),
@@ -239,11 +243,11 @@ export function createFilmScene(canvas: HTMLCanvasElement): FilmScene | null {
     new THREE.PointsMaterial({
       size: 2.6,
       map: glowTex,
-      color: VIOLET_BRIGHT,
+      color: BLOOD,
       transparent: true,
       opacity: 0,
       depthWrite: false,
-      blending: THREE.AdditiveBlending,
+      blending: THREE.NormalBlending,
       sizeAttenuation: true,
     }),
   )
@@ -256,10 +260,10 @@ export function createFilmScene(canvas: HTMLCanvasElement): FilmScene | null {
   meridianGeo.setDrawRange(0, 0)
   const meridianMat = track(
     new THREE.LineBasicMaterial({
-      color: VIOLET_BRIGHT,
+      color: BLOOD,
       transparent: true,
       opacity: 0,
-      blending: THREE.AdditiveBlending,
+      blending: THREE.NormalBlending,
       depthWrite: false,
     }),
   )
@@ -270,7 +274,7 @@ export function createFilmScene(canvas: HTMLCanvasElement): FilmScene | null {
   ringGroup.rotation.set(0.34, 0, 0.46)
   root.add(ringGroup)
   const ringMat = track(
-    new THREE.MeshBasicMaterial({ color: VIOLET_BRIGHT, transparent: true, opacity: 0 }),
+    new THREE.MeshBasicMaterial({ color: ROSE, transparent: true, opacity: 0 }),
   )
   const ring = new THREE.Mesh(track(new THREE.TorusGeometry(1.62, 0.0045, 8, 240)), ringMat)
   ring.rotation.x = Math.PI / 2
@@ -281,13 +285,13 @@ export function createFilmScene(canvas: HTMLCanvasElement): FilmScene | null {
   nodeGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(NODE_COUNT * 3), 3))
   const nodeMat = track(
     new THREE.PointsMaterial({
-      size: 0.34,
+      size: 0.16,
       map: glowTex,
-      color: 0xffffff,
+      color: BLOOD,
       transparent: true,
       opacity: 0,
       depthWrite: false,
-      blending: THREE.AdditiveBlending,
+      blending: THREE.NormalBlending,
       sizeAttenuation: true,
     }),
   )
@@ -299,13 +303,13 @@ export function createFilmScene(canvas: HTMLCanvasElement): FilmScene | null {
   const memberGeo = track(new THREE.BufferGeometry().setFromPoints(memberPoints))
   const memberMat = track(
     new THREE.PointsMaterial({
-      size: 0.2,
+      size: 0.12,
       map: glowTex,
-      color: CYAN,
+      color: OLIVE,
       transparent: true,
       opacity: 0,
       depthWrite: false,
-      blending: THREE.AdditiveBlending,
+      blending: THREE.NormalBlending,
       sizeAttenuation: true,
     }),
   )
@@ -328,10 +332,10 @@ export function createFilmScene(canvas: HTMLCanvasElement): FilmScene | null {
   connGeo.setDrawRange(0, 0)
   const connMat = track(
     new THREE.LineBasicMaterial({
-      color: VIOLET,
+      color: BLOOD,
       transparent: true,
       opacity: 0,
-      blending: THREE.AdditiveBlending,
+      blending: THREE.NormalBlending,
       depthWrite: false,
     }),
   )
@@ -342,13 +346,13 @@ export function createFilmScene(canvas: HTMLCanvasElement): FilmScene | null {
   pulseGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(PULSE_COUNT * 3), 3))
   const pulseMat = track(
     new THREE.PointsMaterial({
-      size: 0.26,
+      size: 0.14,
       map: glowTex,
-      color: 0xffffff,
+      color: BLOOD,
       transparent: true,
       opacity: 0,
       depthWrite: false,
-      blending: THREE.AdditiveBlending,
+      blending: THREE.NormalBlending,
       sizeAttenuation: true,
     }),
   )
@@ -362,10 +366,10 @@ export function createFilmScene(canvas: HTMLCanvasElement): FilmScene | null {
   const shellEdges = track(new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(2.75, 2)))
   const shellMat = track(
     new THREE.LineBasicMaterial({
-      color: VIOLET,
+      color: BLOOD,
       transparent: true,
       opacity: 0,
-      blending: THREE.AdditiveBlending,
+      blending: THREE.NormalBlending,
       depthWrite: false,
     }),
   )
@@ -392,11 +396,11 @@ export function createFilmScene(canvas: HTMLCanvasElement): FilmScene | null {
     new THREE.PointsMaterial({
       size: 0.09,
       map: glowTex,
-      color: 0xb9aede,
+      color: 0x947268,
       transparent: true,
       opacity: 0.65,
       depthWrite: false,
-      blending: THREE.AdditiveBlending,
+      blending: THREE.NormalBlending,
       sizeAttenuation: true,
     }),
   )
@@ -408,7 +412,7 @@ export function createFilmScene(canvas: HTMLCanvasElement): FilmScene | null {
   composer.addPass(new RenderPass(scene, camera))
   // Bloom is the heaviest pass; skip it on low-power phones and lean on the
   // emissive core + additive glows to keep the finale luminous.
-  const bloom = lowPower ? null : new UnrealBloomPass(new THREE.Vector2(1, 1), 0.55, 0.6, 0.32)
+  const bloom = lowPower ? null : new UnrealBloomPass(new THREE.Vector2(1, 1), 0, 0.6, 1)
   if (bloom) composer.addPass(bloom)
   composer.addPass(new OutputPass())
 
@@ -466,7 +470,7 @@ export function createFilmScene(canvas: HTMLCanvasElement): FilmScene | null {
       rimMat.uniforms.uIntensity.value = 0.35 + ignite * 0.5 + finale * 0.25
 
       // Meridians draw-on.
-      meridianMat.opacity = meridians * 0.5
+      meridianMat.opacity = meridians * 0.8
       meridianGeo.setDrawRange(0, Math.floor(meridianCount * meridians))
 
       // Ring + nodes.
@@ -483,7 +487,7 @@ export function createFilmScene(canvas: HTMLCanvasElement): FilmScene | null {
 
       // Constellation.
       memberMat.opacity = constellation * 0.8
-      connMat.opacity = constellation * 0.35
+      connMat.opacity = constellation * 0.72
       connGeo.setDrawRange(0, Math.floor((connPositions.length / 6) * 2 * constellation))
       pulseMat.opacity = constellation * 0.9
       const ppos = pulseGeo.getAttribute('position') as THREE.BufferAttribute
@@ -498,10 +502,10 @@ export function createFilmScene(canvas: HTMLCanvasElement): FilmScene | null {
       ppos.needsUpdate = true
 
       // Shell.
-      shellMat.opacity = shellIn * 0.22 + finale * 0.06
+      shellMat.opacity = shellIn * 0.62 + finale * 0.13
 
       // Finale lift.
-      if (bloom) bloom.strength = 0.55 + ignite * 0.2 + finale * 0.5
+      if (bloom) bloom.strength = 0
       renderer.toneMappingExposure = 1.05 + finale * 0.12
 
       composer.render()

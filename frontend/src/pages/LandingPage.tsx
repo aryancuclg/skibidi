@@ -1,362 +1,205 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import NewsGlobe from '../components/NewsGlobe'
 import ScrollFilm from '../components/scrollfilm/ScrollFilm'
-import { useReveal } from '../components/scrollfilm/useReveal'
 
-/** A rendered film still; degrades to a gradient plate if the file is missing. */
-function Still({ name, alt }: { name: string; alt: string }) {
-  const [failed, setFailed] = useState(false)
+/* ── static content matching the reference design ────────────────── */
+
+const BRIEF_ITEMS = [
+  {
+    category: 'Campus Life',
+    time: '2h ago',
+    headline: 'Student-led sustainability initiative gains momentum',
+    summary:
+      'A new coalition of clubs launches a campus-wide effort to reduce waste and expand green spaces.',
+  },
+  {
+    category: 'Community',
+    time: '5h ago',
+    headline: 'Cultural festival to unite voices from around the world',
+    summary:
+      "Music, food, and stories take center stage at this year's Global Roots Festival.",
+  },
+  {
+    category: 'Opportunities',
+    time: '7h ago',
+    headline: 'New club grant program supports student innovation',
+    summary:
+      'The university has expanded funding to help student clubs bring bold ideas to life.',
+  },
+]
+
+const AROUND_STORIES = [
+  {
+    date: 'Apr 22, 2025',
+    category: 'Student Voices',
+    title: 'How student clubs are building a kinder, more connected campus',
+  },
+  {
+    date: 'Apr 20, 2025',
+    category: 'Innovation',
+    title: 'From a campus idea to a global stage',
+  },
+  {
+    date: 'Apr 18, 2025',
+    category: 'Community',
+    title: 'Small clubs. Big change.',
+  },
+]
+
+/* ── editorial sections ──────────────────────────────────────────── */
+
+function EditorialHeader() {
   return (
-    <figure className="still" data-reveal>
-      {!failed && (
-        <img src={`/film/${name}.webp`} alt={alt} loading="lazy" onError={() => setFailed(true)} />
-      )}
-    </figure>
+    <header className="ed-header">
+      <div className="ed-header-inner">
+        <div className="ed-brand">
+          <span className="ed-brand-name">ClubSphere</span>
+          <span className="ed-edition">Campus culture • Vol. 01</span>
+        </div>
+        <nav className="ed-nav" aria-label="Campus navigation">
+          <a href="#discover">Discover</a>
+          <a href="#news">News</a>
+          <Link to="/clubs">Clubs</Link>
+          <Link to="/events">Events</Link>
+        </nav>
+        <Link to="/login" className="ed-signin">
+          Sign in
+        </Link>
+      </div>
+    </header>
   )
 }
 
-const SPECS: Array<[string, string]> = [
-  ['Interface', 'React 19 · TypeScript · Tailwind 4 · Vite'],
-  ['Service', 'FastAPI (Python 3.11+) · Pydantic schemas'],
-  ['Data', 'SQLite for dev — SQLAlchemy models, Postgres-ready'],
-  ['Access', 'JWT sessions · five role tiers · server-side RBAC'],
-  ['Workflow', 'Faculty recommendation → HOD final approval'],
-  ['Records', 'Immutable audit trail on every mutation'],
-  ['Files', 'Local storage or Azure Blob'],
-  ['Contract', 'OpenAPI-first — live docs at /docs'],
-]
-
-const STATS: Array<[string, string]> = [
-  ['22', 'branches mapped'],
-  ['59', 'programs covered'],
-  ['5', 'role tiers enforced'],
-  ['52', 'tests, green'],
-]
-
-const VOICES: Array<[string, string]> = [
-  ['“Proposals that took three follow-ups now take one signature.”', 'Faculty advisor, B.Tech'],
-  ['“Every club’s events, finally on one calendar.”', 'Club manager, Robotics Society'],
-  ['“Audit week stopped being a search party.”', 'Program office'],
-]
-
-const NAV_LINKS: { href: string; label: string }[] = [
-  { href: '#manifesto', label: 'Overview' },
-  { href: '#origin', label: 'Workflow' },
-  { href: '#numbers', label: 'Numbers' },
-  { href: '#voices', label: 'Voices' },
-]
-
-function BrandMark({ size = 'md' }: { size?: 'md' | 'sm' }) {
-  const box = size === 'md' ? 'h-9 w-9' : 'h-8 w-8'
-  const inner = size === 'md' ? 'rounded-[11px] text-sm' : 'rounded-[9px] text-xs'
+function HeroCopy() {
   return (
-    <div className={`${box} shrink-0 rounded-xl bg-gradient-to-tr from-violet-600 via-indigo-600 to-cyan-400 p-[1px]`}>
-      <div className={`flex h-full w-full items-center justify-center ${inner} bg-slate-950 font-black text-transparent bg-clip-text bg-gradient-to-tr from-violet-400 to-cyan-300`}>
-        CS
+    <div className="ed-hero-copy">
+      <p className="ed-eyebrow">The university, in motion</p>
+      <h1 className="ed-headline">
+        Campus,
+        <br />
+        <em>in orbit.</em>
+      </h1>
+      <p className="ed-hero-intro">
+        Find the people, ideas, and stories shaping student life.
+      </p>
+      <Link to="/login" className="ed-text-link">
+        Explore the community <span aria-hidden="true">→</span>
+      </Link>
+      <div className="ed-manifesto">
+        <div>
+          Different people
+          <br />
+          Brighter perspectives
+          <br />A stronger tomorrow
+        </div>
+        <div>
+          Student clubs
+          <br />
+          Campus news
+          <br />
+          Real impact
+        </div>
       </div>
     </div>
   )
 }
 
-export default function LandingPage() {
-  const [navVisible, setNavVisible] = useState(false)
-  const [menuOpen, setMenuOpen] = useState(false)
-  const rootRef = useRef<HTMLDivElement>(null)
-  useReveal(rootRef)
+function GlobeColumn() {
+  return (
+    <div className="ed-globe-col" id="discover">
+      <div className="ed-globe-wrap">
+        <span className="ed-globe-callout ed-callout-ideas">Ideas</span>
+        <span className="ed-globe-callout ed-callout-people">People</span>
+        <span className="ed-globe-callout ed-callout-stories">Stories</span>
+        <NewsGlobe className="ed-globe-canvas" />
+      </div>
+    </div>
+  )
+}
 
-  // Always open the film at frame zero, never resumed mid-scroll.
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
-
-  // Stable callback — ScrollFilm builds its scene once on mount.
-  const handleFilmEnd = useCallback((ended: boolean) => {
-    setNavVisible(ended)
-    if (!ended) setMenuOpen(false)
-  }, [])
-
-  // Escape dismisses the compact nav menu.
-  useEffect(() => {
-    if (!menuOpen) return
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setMenuOpen(false)
-    }
-    window.addEventListener('keydown', onKeyDown)
-    return () => window.removeEventListener('keydown', onKeyDown)
-  }, [menuOpen])
+function BriefSidebar() {
+  const [today] = useState(() => new Date())
+  const dateStr = today.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  })
 
   return (
-    <div ref={rootRef} className="landing">
-      {/* Sticky nav — appears once the film ends */}
-      <header
-        className={`fixed inset-x-0 top-0 z-50 border-b border-white/5 bg-[#05050a]/80 backdrop-blur-md transition-transform duration-500 ${
-          navVisible ? 'translate-y-0' : '-translate-y-full'
-        }`}
-      >
-        <div className="mx-auto flex min-h-16 max-w-6xl items-center justify-between gap-2 px-4 pt-[env(safe-area-inset-top)] sm:px-6">
-          <a href="#film-top" className="flex min-w-0 items-center gap-3">
-            <BrandMark size="sm" />
-            <span className="truncate bg-gradient-to-r from-violet-400 to-cyan-300 bg-clip-text text-lg font-bold text-transparent">
-              ClubSphere
-            </span>
-          </a>
-          <nav className="hidden items-center gap-8 text-sm text-slate-400 sm:flex">
-            {NAV_LINKS.map((link) => (
-              <a key={link.href} className="transition hover:text-white" href={link.href}>
-                {link.label}
-              </a>
-            ))}
-          </nav>
-          <div className="flex shrink-0 items-center gap-2">
-            <Link
-              to="/login"
-              className="rounded-full border border-violet-500/60 px-4 py-2 text-sm font-medium text-violet-300 transition hover:bg-violet-500 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500 sm:px-5"
-            >
-              Sign in
-            </Link>
-            <button
-              type="button"
-              onClick={() => setMenuOpen((open) => !open)}
-              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-              aria-expanded={menuOpen}
-              aria-controls="landing-mobile-menu"
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-700 text-slate-300 transition hover:border-slate-500 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500 cursor-pointer sm:hidden"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="h-5 w-5" aria-hidden="true">
-                {menuOpen ? <path d="M6 6l12 12M18 6L6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
-              </svg>
-            </button>
+    <aside className="ed-brief" id="news">
+      <div className="ed-brief-header">
+        <h2 className="ed-brief-title">Today's brief</h2>
+        <span className="ed-brief-date">{dateStr}</span>
+      </div>
+      {BRIEF_ITEMS.map((item) => (
+        <article key={item.headline} className="ed-brief-item">
+          <div className="ed-brief-meta">
+            <span className="ed-brief-category">{item.category}</span>
+            <span className="ed-brief-time">{item.time}</span>
           </div>
-        </div>
+          <h3 className="ed-brief-headline">{item.headline}</h3>
+          <p className="ed-brief-summary">{item.summary}</p>
+        </article>
+      ))}
+      <Link to="/login" className="ed-brief-more">
+        See all news <span aria-hidden="true">→</span>
+      </Link>
+    </aside>
+  )
+}
 
-        {/* Phones: the section links are hidden above `sm`, so surface them here. */}
-        <div
-          id="landing-mobile-menu"
-          className={`overflow-hidden border-t border-white/5 transition-[max-height,opacity] duration-300 sm:hidden ${
-            menuOpen ? 'max-h-72 opacity-100' : 'max-h-0 opacity-0'
-          }`}
-        >
-          <nav className="mx-auto flex max-w-6xl flex-col px-3 py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
-            {NAV_LINKS.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={() => setMenuOpen(false)}
-                className="rounded-lg px-3 py-3 text-sm font-medium text-slate-300 transition hover:bg-white/5 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500"
-              >
-                {link.label}
-              </a>
-            ))}
-          </nav>
-        </div>
-      </header>
-
-      <span id="film-top" />
-
-      {/* ── the film ─────────────────────────────────────── */}
-      <ScrollFilm onFilmEnd={handleFilmEnd} />
-
-      {/* ── brand page ───────────────────────────────────── */}
-      <main className="relative z-10 bg-[#05050a]">
-        {/* Manifesto */}
-        <section id="manifesto" className="mx-auto max-w-5xl scroll-mt-24 px-5 py-24 text-center sm:px-6 sm:py-40">
-          <h2 data-reveal className="display-xl text-white">
-            Every club deserves an <span className="text-violet-400">operating system.</span>
-          </h2>
-          <p data-reveal className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-slate-400 sm:mt-8 sm:text-lg">
-            Clubs form, propose, approve, meet, audit. ClubSphere is the single
-            orbit all of it shares.
-          </p>
-        </section>
-
-        {/* Origin */}
-        <section id="origin" className="scroll-mt-24 border-t border-white/5">
-          <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 py-16 sm:gap-14 sm:px-6 sm:py-28 md:grid-cols-2">
-            <div data-reveal>
-              <p className="eyebrow">Origin</p>
-              <h2 className="display-lg text-white">Why the sphere exists</h2>
-              <p className="mt-6 leading-relaxed text-slate-400">
-                Clubs run on paper forms, chat threads and memory. Proposals
-                stall between desks; audits reconstruct history from
-                screenshots.
-              </p>
-              <p className="mt-4 leading-relaxed text-slate-400">
-                ClubSphere models the real chain — student proposal, faculty
-                recommendation, HOD approval, club born with its manager
-                already assigned.
-              </p>
-            </div>
-            <Still name="still-origin" alt="The ClubSphere core, rendered at the ignition chapter" />
-          </div>
-        </section>
-
-        {/* Craft chapters */}
-        <section id="craft" className="scroll-mt-24 border-t border-white/5">
-          <div className="mx-auto max-w-6xl px-5 sm:px-6">
-            <div className="grid items-center gap-10 py-14 sm:gap-14 sm:py-24 md:grid-cols-2">
-              <Still name="still-approvals" alt="Meridian lines drawing across the sphere" />
-              <div data-reveal>
-                <p className="eyebrow">Approvals</p>
-                <h2 className="display-lg text-white">Approvals that can’t get lost.</h2>
-                <p className="mt-6 leading-relaxed text-slate-400">
-                  Faculty recommends. The Head of Department gives final
-                  approval. The club appears instantly, roles assigned —
-                  nothing to retype, nothing to chase.
-                </p>
+function AroundCampus() {
+  return (
+    <section className="ed-around" id="around-campus">
+      <div className="ed-around-inner">
+        <h2 className="ed-around-heading">Around campus</h2>
+        <div className="ed-around-stories">
+          {AROUND_STORIES.map((story) => (
+            <Link key={story.title} to="/login" className="ed-around-story">
+              <div className="ed-around-meta">
+                <span>{story.date}</span>
+                <span className="ed-brief-category">{story.category}</span>
               </div>
-            </div>
-
-            <div className="grid items-center gap-10 py-14 sm:gap-14 sm:py-24 md:grid-cols-2">
-              <div data-reveal className="md:order-1">
-                <p className="eyebrow">Attendance</p>
-                <h2 className="display-lg text-white">Attendance that proves itself.</h2>
-                <p className="mt-6 leading-relaxed text-slate-400">
-                  Registrations, check-ins and notifications ride one wire from
-                  event to record. Every mutation lands in an audit trail
-                  nobody can rewrite.
-                </p>
-              </div>
-              <Still name="still-attendance" alt="The member constellation with event pulses" />
-            </div>
-
-            <div className="grid items-center gap-10 py-14 sm:gap-14 sm:py-24 md:grid-cols-2">
-              <Still name="still-programs" alt="The compliance shell assembling around the sphere" />
-              <div data-reveal>
-                <p className="eyebrow">Academics</p>
-                <h2 className="display-lg text-white">One grid, every program.</h2>
-                <p className="mt-6 leading-relaxed text-slate-400">
-                  Twenty-two branches, fifty-nine programs — partner-backed
-                  tracks included — drive every dropdown from registration to
-                  proposal. Pick your program once; the platform knows your
-                  world.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Numbers */}
-        <section id="numbers" className="scroll-mt-24 border-t border-white/5">
-          <div className="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-5 py-16 sm:gap-10 sm:px-6 sm:py-28 md:grid-cols-4">
-            {STATS.map(([n, label]) => (
-              <div key={label} data-reveal className="text-center">
-                <div className="stat-num bg-gradient-to-br from-violet-300 to-cyan-200 bg-clip-text text-transparent">
-                  {n}
-                </div>
-                <p className="mt-2 text-sm uppercase tracking-[0.2em] text-slate-500">{label}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Specifications */}
-        <section id="specs" className="scroll-mt-24 border-t border-white/5">
-          <div className="mx-auto max-w-4xl px-5 py-16 sm:px-6 sm:py-28">
-            <h2 data-reveal className="display-lg mb-10 text-center text-white sm:mb-12">
-              Specifications
-            </h2>
-            <dl data-reveal className="divide-y divide-white/5 rounded-2xl border border-white/10 bg-white/[0.02]">
-              {SPECS.map(([k, v]) => (
-                <div key={k} className="grid gap-1 px-5 py-4 sm:grid-cols-3 sm:gap-6 sm:px-6">
-                  <dt className="text-sm uppercase tracking-[0.16em] text-slate-500">{k}</dt>
-                  <dd className="text-sm text-slate-300 sm:col-span-2">{v}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-        </section>
-
-        {/* Voices */}
-        <section id="voices" className="scroll-mt-24 border-t border-white/5">
-          <div className="mx-auto grid max-w-6xl gap-8 px-5 py-16 sm:gap-10 sm:px-6 sm:py-28 md:grid-cols-3">
-            {VOICES.map(([quote, who]) => (
-              <blockquote key={who} data-reveal className="rounded-2xl border border-white/10 bg-white/[0.02] p-6 sm:p-8">
-                <p className="text-lg leading-snug text-slate-200">{quote}</p>
-                <footer className="mt-5 text-sm text-slate-500">— {who}</footer>
-              </blockquote>
-            ))}
-          </div>
-        </section>
-
-        {/* Gallery */}
-        <section id="gallery" className="scroll-mt-24 border-t border-white/5">
-          <div className="mx-auto max-w-6xl px-5 py-16 sm:px-6 sm:py-28">
-            <h2 data-reveal className="display-lg mb-10 text-center text-white sm:mb-12">
-              Inside the sphere.
-            </h2>
-            <div className="grid gap-6 md:grid-cols-3">
-              <Still name="still-gallery-1" alt="Orbital ring with club nodes" />
-              <Still name="still-gallery-2" alt="Core ignition close-up" />
-              <Still name="still-gallery-3" alt="Full assembly, finale bloom" />
-            </div>
-          </div>
-        </section>
-
-        {/* Closing CTA */}
-        <section className="border-t border-white/5">
-          <div className="cta-band mx-auto max-w-4xl px-5 py-20 text-center sm:px-6 sm:py-36">
-            <h2 data-reveal className="display-xl text-white">
-              One sphere. <span className="text-violet-400">Every activity.</span>
-            </h2>
-            <p data-reveal className="mx-auto mt-6 max-w-xl text-slate-400">
-              The platform is live for campus deployment — governance, events,
-              attendance and audits in one system.
-            </p>
-            <div data-reveal className="mt-10">
-              <Link to="/login" className="film-cta pointer-events-auto">
-                Enter the platform
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* Footer */}
-        <footer className="border-t border-white/10 bg-black/40">
-          <div className="mx-auto grid max-w-6xl gap-10 px-5 py-12 sm:gap-12 sm:px-6 sm:py-16 sm:grid-cols-2 md:grid-cols-4">
-            <div>
-              <div className="flex items-center gap-3">
-                <BrandMark />
-                <span className="bg-gradient-to-r from-violet-400 to-cyan-300 bg-clip-text text-lg font-bold text-transparent">
-                  ClubSphere
+              <div className="ed-around-story-title">
+                <span>{story.title}</span>
+                <span className="ed-around-arrow" aria-hidden="true">
+                  →
                 </span>
               </div>
-              <p className="mt-4 text-sm leading-relaxed text-slate-500">
-                University club &amp; activity lifecycle management —
-                governance to audit, one orbit.
-              </p>
-            </div>
-            <div>
-              <h3 className="footer-head">Platform</h3>
-              <ul className="footer-list">
-                <li><Link to="/login">Clubs</Link></li>
-                <li><Link to="/login">Events</Link></li>
-                <li><Link to="/login">Join a club</Link></li>
-                <li><Link to="/login">Apply to found one</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="footer-head">Workflow</h3>
-              <ul className="footer-list">
-                <li><a href="#origin">Propose</a></li>
-                <li><a href="#craft">Recommend</a></li>
-                <li><a href="#craft">Approve</a></li>
-                <li><a href="#specs">Audit</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="footer-head">Stack</h3>
-              <ul className="footer-list">
-                <li>React 19 + Vite</li>
-                <li>FastAPI + SQLAlchemy</li>
-                <li>OpenAPI-first contracts</li>
-                <li>JWT + role-based access</li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-white/5 py-6 text-center text-xs text-slate-600">
-            © 2026 ClubSphere · University club &amp; activity lifecycle platform
-          </div>
-        </footer>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function EditorialFooter() {
+  const [year] = useState(() => new Date().getFullYear())
+  return (
+    <footer className="ed-footer">
+      <span>© {year} ClubSphere · Campus, in orbit</span>
+      <Link to="/login">Enter the platform →</Link>
+    </footer>
+  )
+}
+
+/* ── main landing page ───────────────────────────────────────────── */
+
+export default function LandingPage() {
+  return (
+    <div className="landing" id="top">
+      <ScrollFilm />
+      <main className="editorial">
+        <EditorialHeader />
+        <section className="ed-hero" aria-label="ClubSphere introduction">
+          <HeroCopy />
+          <GlobeColumn />
+          <BriefSidebar />
+        </section>
+        <AroundCampus />
+        <EditorialFooter />
       </main>
     </div>
   )

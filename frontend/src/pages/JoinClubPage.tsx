@@ -82,7 +82,7 @@ export default function JoinClubPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search active clubs…"
-          className="w-full rounded-xl border border-slate-700 bg-slate-900 min-h-11 px-4 py-2.5 text-sm text-white placeholder-slate-500 outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 sm:max-w-sm"
+          className="w-full rounded-xl border border-rose/30 bg-white min-h-11 px-4 py-2.5 text-sm text-bean placeholder-rose outline-none transition focus:border-blood focus:ring-2 focus:ring-blood/20 sm:max-w-sm"
         />
       </div>
 
@@ -102,28 +102,28 @@ export default function JoinClubPage() {
             return (
               <div
                 key={club.club_id}
-                className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 transition hover:border-violet-500/40"
+                className="rounded-2xl border border-rose/30 bg-white p-5 transition hover:border-blood/40"
               >
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-3">
-                      <h2 className="text-base font-bold text-white">{club.name}</h2>
+                      <h2 className="text-base font-bold text-bean">{club.name}</h2>
                       <StatusBadge status={club.status} />
                     </div>
-                    <p className="mt-1 text-xs text-slate-400">
+                    <p className="mt-1 text-xs text-olive">
                       {club.program_name ?? 'Unassigned program'} •{' '}
                       {club.member_count ?? 0} member{(club.member_count ?? 0) === 1 ? '' : 's'} • Managed by{' '}
-                      <span className="font-medium text-slate-300">{club.manager_name ?? '—'}</span>
+                      <span className="font-medium text-bean">{club.manager_name ?? '—'}</span>
                     </p>
                     {club.description?.trim() && (
-                      <p className="mt-2 line-clamp-2 text-sm text-slate-500">{club.description}</p>
+                      <p className="mt-2 line-clamp-2 text-sm text-olive">{club.description}</p>
                     )}
                   </div>
 
                   <button
                     onClick={() => void requestToJoin(club)}
                     disabled={busyClubId === club.club_id}
-                    className="shrink-0 rounded-xl bg-violet-600 px-4 py-2 text-xs font-semibold text-white shadow-sm shadow-violet-500/20 transition hover:bg-violet-500 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
+                    className="shrink-0 rounded-xl bg-blood px-4 py-2 text-xs font-semibold text-white shadow-sm shadow-blood/20 transition hover:bg-blood disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
                   >
                     {busyClubId === club.club_id ? 'Sending…' : 'Request to join'}
                   </button>
@@ -131,7 +131,7 @@ export default function JoinClubPage() {
 
                 {state && (
                   <p
-                    className={`mt-3 text-xs font-medium ${state.kind === 'error' ? 'text-rose-300' : 'text-emerald-300'}`}
+                    className={`mt-3 text-xs font-medium ${state.kind === 'error' ? 'text-blood' : 'text-olive'}`}
                   >
                     {state.message}
                   </p>

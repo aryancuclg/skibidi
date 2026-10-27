@@ -38,7 +38,7 @@ function AppRoutes() {
       <Route
         path="/"
         element={
-          <Suspense fallback={<div className="min-h-screen bg-[#05050a]" />}>
+          <Suspense fallback={<div className="min-h-screen bg-white" />}>
             <LandingPage />
           </Suspense>
         }

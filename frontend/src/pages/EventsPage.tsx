@@ -91,12 +91,12 @@ export default function EventsPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search events by title or venue…"
-          className="w-full rounded-xl border border-slate-700 bg-slate-900 min-h-11 px-4 py-2.5 text-sm text-white placeholder-slate-500 outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 sm:max-w-sm"
+          className="w-full rounded-xl border border-rose/30 bg-white min-h-11 px-4 py-2.5 text-sm text-bean placeholder-rose outline-none transition focus:border-blood focus:ring-2 focus:ring-blood/20 sm:max-w-sm"
         />
         <select
           value={status}
           onChange={(e) => setStatus(e.target.value)}
-          className="w-full rounded-xl border border-slate-700 bg-slate-900 min-h-11 px-4 py-2.5 text-sm text-white outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 sm:w-56"
+          className="w-full rounded-xl border border-rose/30 bg-white min-h-11 px-4 py-2.5 text-sm text-bean outline-none transition focus:border-blood focus:ring-2 focus:ring-blood/20 sm:w-56"
         >
           <option value="published">Published</option>
           <option value="completed">Completed</option>
@@ -121,39 +121,39 @@ export default function EventsPage() {
             return (
               <article
                 key={event.event_id}
-                className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 transition hover:border-violet-500/40"
+                className="rounded-2xl border border-rose/30 bg-white p-5 transition hover:border-blood/40"
               >
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-3">
-                      <h2 className="text-lg font-bold text-white">{event.title}</h2>
+                      <h2 className="text-lg font-bold text-bean">{event.title}</h2>
                       <StatusBadge status={event.status} />
                     </div>
-                    <p className="mt-1 text-xs font-medium text-violet-300">
+                    <p className="mt-1 text-xs font-medium text-blood">
                       Hosted by {event.club_name ?? 'a university club'}
                     </p>
 
                     <dl className="mt-3 grid grid-cols-1 gap-x-8 gap-y-1 text-xs sm:grid-cols-2">
                       <div className="flex gap-2">
-                        <dt className="text-slate-500">Venue:</dt>
-                        <dd className="text-slate-300">{event.venue_text || 'To be announced'}</dd>
+                        <dt className="text-olive">Venue:</dt>
+                        <dd className="text-bean">{event.venue_text || 'To be announced'}</dd>
                       </div>
                       <div className="flex gap-2">
-                        <dt className="text-slate-500">Starts:</dt>
-                        <dd className="text-slate-300">{formatDate(event.event_date)}</dd>
+                        <dt className="text-olive">Starts:</dt>
+                        <dd className="text-bean">{formatDate(event.event_date)}</dd>
                       </div>
                       <div className="flex gap-2">
-                        <dt className="text-slate-500">Register by:</dt>
-                        <dd className="text-slate-300">{formatDate(event.registration_deadline)}</dd>
+                        <dt className="text-olive">Register by:</dt>
+                        <dd className="text-bean">{formatDate(event.registration_deadline)}</dd>
                       </div>
                     </dl>
                   </div>
 
                   <div className="shrink-0 sm:text-right">
-                    <p className={`text-2xl font-extrabold ${isFull ? 'text-rose-400' : 'text-white'}`}>
+                    <p className={`text-2xl font-extrabold ${isFull ? 'text-blood' : 'text-bean'}`}>
                       {event.seats_left}
                     </p>
-                    <p className="text-xs text-slate-500">of {event.capacity} seats left</p>
+                    <p className="text-xs text-olive">of {event.capacity} seats left</p>
                     <button
                       onClick={() => void toggleRegistration(event)}
                       disabled={
@@ -161,10 +161,10 @@ export default function EventsPage() {
                         event.status !== 'published' ||
                         (!registeredIds.has(event.event_id) && isFull)
                       }
-                      className={`mt-3 rounded-xl px-4 py-2 text-xs font-semibold shadow-sm transition disabled:cursor-not-allowed disabled:bg-slate-800 disabled:text-slate-500 cursor-pointer ${
+                      className={`mt-3 rounded-xl px-4 py-2 text-xs font-semibold shadow-sm transition disabled:cursor-not-allowed disabled:bg-white disabled:text-olive cursor-pointer ${
                         registeredIds.has(event.event_id)
-                          ? 'bg-slate-800 text-slate-200 hover:bg-slate-700'
-                          : 'bg-violet-600 text-white shadow-violet-500/20 hover:bg-violet-500'
+                          ? 'bg-white text-bean hover:bg-vanilla'
+                          : 'bg-blood text-white shadow-blood/20 hover:bg-blood'
                       }`}
                     >
                       {busyEventId === event.event_id
@@ -178,16 +178,16 @@ export default function EventsPage() {
                   </div>
                 </div>
 
-                <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
+                <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-white">
                   <div
-                    className={`h-full rounded-full transition-all ${isFull ? 'bg-rose-500' : 'bg-gradient-to-r from-violet-500 to-cyan-400'}`}
+                    className={`h-full rounded-full transition-all ${isFull ? 'bg-blood' : 'bg-vanilla '}`}
                     style={{ width: `${Math.min(100, filled)}%` }}
                   />
                 </div>
 
                 {note && (
                   <p
-                    className={`mt-3 text-xs font-medium ${note.kind === 'error' ? 'text-rose-300' : 'text-emerald-300'}`}
+                    className={`mt-3 text-xs font-medium ${note.kind === 'error' ? 'text-blood' : 'text-olive'}`}
                   >
                     {note.message}
                   </p>

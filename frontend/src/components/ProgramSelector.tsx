@@ -41,13 +41,13 @@ export default function ProgramSelector({
   const programs = selectedBranch?.programs ?? []
 
   const selectClass =
-    'w-full rounded-xl border border-slate-700 bg-slate-900 min-h-11 px-4 py-2.5 text-sm text-white outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20'
+    'w-full rounded-xl border border-rose/30 bg-white min-h-11 px-4 py-2.5 text-sm text-bean outline-none transition focus:border-blood focus:ring-2 focus:ring-blood/20'
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
       <div>
-        <label htmlFor="branch" className="mb-1.5 block text-xs font-medium text-slate-400">
-          Master program <span className="text-rose-400">*</span>
+        <label htmlFor="branch" className="mb-1.5 block text-xs font-medium text-olive">
+          Master program <span className="text-blood">*</span>
         </label>
         <select
           id="branch"
@@ -69,9 +69,9 @@ export default function ProgramSelector({
       </div>
 
       <div>
-        <label htmlFor="program" className="mb-1.5 block text-xs font-medium text-slate-400">
+        <label htmlFor="program" className="mb-1.5 block text-xs font-medium text-olive">
           Specialization{' '}
-          {required && <span className="text-rose-400">*</span>}
+          {required && <span className="text-blood">*</span>}
         </label>
         <select
           id="program"

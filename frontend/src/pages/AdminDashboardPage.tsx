@@ -41,10 +41,10 @@ function StatCard({
   accent: string
 }) {
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
-      <p className="text-xs uppercase tracking-wider text-slate-500">{label}</p>
+    <div className="rounded-2xl border border-rose/30 bg-white p-5">
+      <p className="text-xs uppercase tracking-wider text-olive">{label}</p>
       <p className={`mt-2 text-3xl font-extrabold ${accent}`}>{value}</p>
-      {hint && <p className="mt-1 text-xs text-slate-500">{hint}</p>}
+      {hint && <p className="mt-1 text-xs text-olive">{hint}</p>}
     </div>
   )
 }
@@ -70,12 +70,12 @@ function ProposalCard({
   const actionable = canReview && (proposal.status === 'submitted' || proposal.status === 'changes_requested')
 
   return (
-    <article className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+    <article className="rounded-2xl border border-rose/30 bg-white p-5">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h3 className="text-sm font-bold text-white">{proposal.proposed_name}</h3>
-          <p className="mt-0.5 text-xs text-slate-500">
-            by <span className="font-medium text-slate-400">{proposal.applicant_name ?? 'Unknown applicant'}</span>
+          <h3 className="text-sm font-bold text-bean">{proposal.proposed_name}</h3>
+          <p className="mt-0.5 text-xs text-olive">
+            by <span className="font-medium text-olive">{proposal.applicant_name ?? 'Unknown applicant'}</span>
             {' • '}
             {proposal.program_name ?? 'Unknown program'}
             {proposal.branch_name && ` (${proposal.branch_name})`}
@@ -84,40 +84,40 @@ function ProposalCard({
         <StatusBadge status={proposal.status} />
       </div>
 
-      <p className="mt-3 text-xs leading-relaxed text-slate-400">{proposal.description}</p>
+      <p className="mt-3 text-xs leading-relaxed text-olive">{proposal.description}</p>
 
-      <p className="mt-2 text-[11px] text-slate-500">Submitted {formatDate(proposal.submitted_at)}</p>
+      <p className="mt-2 text-[11px] text-olive">Submitted {formatDate(proposal.submitted_at)}</p>
 
       {proposal.approvals.length > 0 ? (
-        <ol className="mt-4 space-y-2 border-t border-slate-800 pt-4">
+        <ol className="mt-4 space-y-2 border-t border-rose/30 pt-4">
           {proposal.approvals.map((approval) => (
             <li key={approval.approval_id} className="text-xs">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="font-semibold uppercase tracking-wide text-slate-300">{approval.stage}</span>
+                <span className="font-semibold uppercase tracking-wide text-bean">{approval.stage}</span>
                 <StatusBadge status={approval.decision === 'approve' ? 'approved' : approval.decision} />
-                <span className="text-slate-500">
+                <span className="text-olive">
                   by {approval.reviewer_name ?? 'Reviewer'} on {formatDate(approval.decided_at)}
                 </span>
               </div>
               {approval.comment && (
-                <p className="mt-1 rounded-lg bg-slate-950/70 px-3 py-2 text-slate-400">“{approval.comment}”</p>
+                <p className="mt-1 rounded-lg bg-white px-3 py-2 text-olive">“{approval.comment}”</p>
               )}
             </li>
           ))}
         </ol>
       ) : (
-        <p className="mt-4 border-t border-slate-800 pt-4 text-xs text-slate-500">
+        <p className="mt-4 border-t border-rose/30 pt-4 text-xs text-olive">
           Awaiting first review by a Faculty Advisor.
         </p>
       )}
 
       {actionable && (
-        <div className="mt-4 border-t border-slate-800 pt-4">
+        <div className="mt-4 border-t border-rose/30 pt-4">
           <label
             htmlFor={`review-comment-${proposal.proposal_id}`}
-            className="mb-1.5 block text-xs font-medium text-slate-400"
+            className="mb-1.5 block text-xs font-medium text-olive"
           >
-            Reviewer comment <span className="text-slate-600">(required to reject or request changes)</span>
+            Reviewer comment <span className="text-olive">(required to reject or request changes)</span>
           </label>
           <textarea
             id={`review-comment-${proposal.proposal_id}`}
@@ -125,14 +125,14 @@ function ProposalCard({
             value={comment}
             onChange={(e) => onCommentChange(e.target.value)}
             placeholder="Add your reasoning for the applicant…"
-            className="w-full resize-y rounded-xl border border-slate-700 bg-slate-950/70 px-3 py-2 text-xs text-white placeholder-slate-600 outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20"
+            className="w-full resize-y rounded-xl border border-rose/30 bg-white px-3 py-2 text-xs text-bean placeholder-rose outline-none transition focus:border-blood focus:ring-2 focus:ring-blood/20"
           />
           <div className="mt-3 flex flex-wrap items-center gap-2">
             <button
               type="button"
               disabled={reviewing}
               onClick={() => onReview('approve')}
-              className="rounded-xl bg-emerald-600/90 px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
+              className="rounded-xl bg-olive/90 px-3.5 py-2 text-xs font-semibold text-bean transition hover:bg-olive disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
             >
               {reviewing ? 'Recording…' : 'Approve & charter club'}
             </button>
@@ -140,7 +140,7 @@ function ProposalCard({
               type="button"
               disabled={reviewing}
               onClick={() => onReview('changes_requested')}
-              className="rounded-xl border border-amber-500/40 bg-amber-500/10 px-3.5 py-2 text-xs font-semibold text-amber-300 transition hover:bg-amber-500/20 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
+              className="rounded-xl border border-rose/40 bg-rose/10 px-3.5 py-2 text-xs font-semibold text-rose transition hover:bg-rose/20 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
             >
               Request changes
             </button>
@@ -148,7 +148,7 @@ function ProposalCard({
               type="button"
               disabled={reviewing}
               onClick={() => onReview('reject')}
-              className="rounded-xl border border-rose-500/40 bg-rose-500/10 px-3.5 py-2 text-xs font-semibold text-rose-300 transition hover:bg-rose-500/20 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
+              className="rounded-xl border border-blood/40 bg-blood/10 px-3.5 py-2 text-xs font-semibold text-blood transition hover:bg-blood/20 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
             >
               Reject
             </button>
@@ -334,25 +334,25 @@ export default function AdminDashboardPage() {
               label="Active clubs"
               value={overview.active_clubs}
               hint={`${overview.total_clubs} chartered in total`}
-              accent="text-violet-300"
+              accent="text-blood"
             />
             <StatCard
               label="Pending proposals"
               value={overview.pending_proposals}
               hint="Awaiting Faculty or HOD review"
-              accent={overview.pending_proposals > 0 ? 'text-amber-300' : 'text-slate-300'}
+              accent={overview.pending_proposals > 0 ? 'text-rose' : 'text-bean'}
             />
             <StatCard
               label="Published events"
               value={overview.published_events}
               hint={`${overview.total_events} events on record`}
-              accent="text-cyan-300"
+              accent="text-olive"
             />
             <StatCard
               label="Students"
               value={overview.total_students}
               hint="Registered student accounts"
-              accent="text-indigo-300"
+              accent="text-blood"
             />
           </div>
 
@@ -362,19 +362,19 @@ export default function AdminDashboardPage() {
               label="Confirmed registrations"
               value={overview.confirmed_registrations}
               hint={`${overview.total_registrations} total registration attempts`}
-              accent="text-white"
+              accent="text-bean"
             />
             <StatCard
               label="Attendance recorded"
               value={overview.total_attendance}
               hint="Verified attendance marks"
-              accent="text-white"
+              accent="text-bean"
             />
             <StatCard
               label="Avg attendance rate"
               value={`${attendanceRate}%`}
               hint="Attendance ÷ confirmed registrations"
-              accent={attendanceRate >= 60 ? 'text-emerald-300' : 'text-amber-300'}
+              accent={attendanceRate >= 60 ? 'text-olive' : 'text-rose'}
             />
           </div>
         </>
@@ -384,8 +384,8 @@ export default function AdminDashboardPage() {
       <section className="mt-10">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h2 className="text-base font-bold text-white">Club applications</h2>
-            <p className="mt-1 text-xs text-slate-400">
+            <h2 className="text-base font-bold text-bean">Club applications</h2>
+            <p className="mt-1 text-xs text-olive">
               Proposals to open new clubs.
               {canReview
                 ? ' Your approval is final — it charts the club immediately and appoints the applicant as its Lead.'
@@ -400,8 +400,8 @@ export default function AdminDashboardPage() {
                 onClick={() => handleTabChange(tab.key)}
                 className={`rounded-lg px-3 py-1.5 text-xs font-medium transition cursor-pointer ${
                   statusFilter === tab.key
-                    ? 'bg-violet-600 text-white shadow-lg shadow-violet-500/20'
-                    : 'border border-slate-800 bg-slate-900/60 text-slate-400 hover:border-slate-700 hover:text-slate-200'
+                    ? 'bg-blood text-white shadow-lg shadow-blood/20'
+                    : 'border border-rose/30 bg-white text-olive hover:border-rose/30 hover:text-bean'
                 }`}
               >
                 {tab.label}
@@ -438,7 +438,7 @@ export default function AdminDashboardPage() {
         )}
 
         {!loadingProposals && proposals.length > 0 && (
-          <p className="mt-4 text-[11px] uppercase tracking-wider text-slate-500">
+          <p className="mt-4 text-[11px] uppercase tracking-wider text-olive">
             Showing {proposals.length} of {proposalsTotal} application{proposalsTotal === 1 ? '' : 's'}
           </p>
         )}
@@ -464,8 +464,8 @@ export default function AdminDashboardPage() {
       {/* Branch breakdown */}
       {overview && !loadingAnalytics && (
         <section className="mt-10">
-          <h2 className="text-base font-bold text-white">Branch breakdown</h2>
-          <p className="mt-1 text-xs text-slate-400">
+          <h2 className="text-base font-bold text-bean">Branch breakdown</h2>
+          <p className="mt-1 text-xs text-olive">
             Club, event, and registration activity grouped by master branch (e.g. B.Tech, M.Tech).
           </p>
 
@@ -474,9 +474,9 @@ export default function AdminDashboardPage() {
               <EmptyState title="No branches recorded" />
             </div>
           ) : (
-            <div className="mt-4 overflow-x-auto rounded-2xl border border-slate-800">
+            <div className="mt-4 overflow-x-auto rounded-2xl border border-rose/30">
               <table className="w-full text-left text-sm">
-                <thead className="bg-slate-900/80 text-xs uppercase tracking-wider text-slate-500">
+                <thead className="bg-white text-xs uppercase tracking-wider text-olive">
                   <tr>
                     <th className="px-4 py-3 font-medium">Branch</th>
                     <th className="px-4 py-3 font-medium">Active clubs</th>
@@ -484,13 +484,13 @@ export default function AdminDashboardPage() {
                     <th className="px-4 py-3 font-medium">Registrations</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800">
+                <tbody className="divide-y divide-rose/30">
                   {overview.branch_metrics.map((branch) => (
-                    <tr key={branch.branch_id} className="bg-slate-950/40">
-                      <td className="px-4 py-3 font-medium text-white">{branch.branch_name}</td>
-                      <td className="px-4 py-3 text-slate-300">{branch.active_clubs}</td>
-                      <td className="px-4 py-3 text-slate-300">{branch.events_hosted}</td>
-                      <td className="px-4 py-3 text-slate-300">{branch.total_registrations}</td>
+                    <tr key={branch.branch_id} className="bg-white">
+                      <td className="px-4 py-3 font-medium text-bean">{branch.branch_name}</td>
+                      <td className="px-4 py-3 text-bean">{branch.active_clubs}</td>
+                      <td className="px-4 py-3 text-bean">{branch.events_hosted}</td>
+                      <td className="px-4 py-3 text-bean">{branch.total_registrations}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -503,8 +503,8 @@ export default function AdminDashboardPage() {
       {/* Audit trail — Administrator only */}
       {canViewAudit && (
         <section className="mt-10">
-          <h2 className="text-base font-bold text-white">Recent audit activity</h2>
-          <p className="mt-1 text-xs text-slate-400">
+          <h2 className="text-base font-bold text-bean">Recent audit activity</h2>
+          <p className="mt-1 text-xs text-olive">
             Immutable record of sensitive operations — the last 25 entries.
           </p>
 
@@ -518,25 +518,25 @@ export default function AdminDashboardPage() {
             {auditLogs.map((log) => (
               <div
                 key={log.audit_log_id}
-                className="rounded-xl border border-slate-800 bg-slate-900/40 px-4 py-3"
+                className="rounded-xl border border-rose/30 bg-white px-4 py-3"
               >
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="rounded-md bg-violet-500/10 px-2 py-0.5 font-mono text-[11px] font-semibold text-violet-300">
+                    <span className="rounded-md bg-blood/10 px-2 py-0.5 font-mono text-[11px] font-semibold text-blood">
                       {log.action}
                     </span>
-                    <span className="text-xs text-slate-500">
+                    <span className="text-xs text-olive">
                       {log.entity_type} #{log.entity_id}
                     </span>
                   </div>
-                  <span className="text-xs text-slate-500">{formatDate(log.created_at)}</span>
+                  <span className="text-xs text-olive">{formatDate(log.created_at)}</span>
                 </div>
-                <p className="mt-1.5 text-xs text-slate-400">
-                  by <span className="font-medium text-slate-300">{log.actor_name ?? 'Unknown'}</span>
-                  {log.actor_email && <span className="text-slate-500"> ({log.actor_email})</span>}
+                <p className="mt-1.5 text-xs text-olive">
+                  by <span className="font-medium text-bean">{log.actor_name ?? 'Unknown'}</span>
+                  {log.actor_email && <span className="text-olive"> ({log.actor_email})</span>}
                 </p>
                 {log.details && (
-                  <pre className="mt-2 overflow-x-auto rounded-lg bg-slate-950/70 px-3 py-2 text-[11px] leading-relaxed text-slate-400">
+                  <pre className="mt-2 overflow-x-auto rounded-lg bg-white px-3 py-2 text-[11px] leading-relaxed text-olive">
                     {log.details}
                   </pre>
                 )}

@@ -154,9 +154,10 @@ export default function ScrollFilm({ onFilmEnd }: { onFilmEnd?: (ended: boolean)
 
     // Scene is synchronous — one rendered frame means we're ready.
     scene?.render(0.016)
-    requestAnimationFrame(() => {
+    let loaderTimeout = 0
+    const loaderFrame = requestAnimationFrame(() => {
       if (loaderBarRef.current) loaderBarRef.current.style.width = '100%'
-      window.setTimeout(() => setLoaded(true), 350)
+      loaderTimeout = window.setTimeout(() => setLoaded(true), 350)
     })
 
     let raf = 0
@@ -199,6 +200,7 @@ export default function ScrollFilm({ onFilmEnd }: { onFilmEnd?: (ended: boolean)
           o = Math.min((target - tIn) / rise, 1) * Math.min((tOut - target) / fall, 1)
           o = Math.min(Math.max(o, 0), 1)
         }
+        el.inert = o < 0.05
         el.style.opacity = o.toFixed(3)
         const drift = (target - tHold) * -40
         el.style.transform = `${transformBase(pos)} translateY(${drift.toFixed(1)}px)`
@@ -218,6 +220,8 @@ export default function ScrollFilm({ onFilmEnd }: { onFilmEnd?: (ended: boolean)
 
     return () => {
       cancelAnimationFrame(raf)
+      cancelAnimationFrame(loaderFrame)
+      window.clearTimeout(loaderTimeout)
       window.removeEventListener('resize', resize)
       scene?.dispose()
     }

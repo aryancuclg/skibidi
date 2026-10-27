@@ -95,29 +95,29 @@ export default function Layout() {
   }
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
-    `flex min-h-11 w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500 ${
+    `flex min-h-11 w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blood ${
       isActive
-        ? 'bg-violet-600 text-white shadow-lg shadow-violet-500/20'
-        : 'text-slate-400 hover:bg-slate-900 hover:text-white'
+        ? 'bg-blood text-white shadow-lg shadow-blood/20'
+        : 'text-olive hover:bg-white hover:text-bean'
     }`
 
   const brand = (
     <>
-      <div className="h-9 w-9 shrink-0 rounded-xl bg-gradient-to-tr from-violet-600 via-indigo-600 to-cyan-400 p-[1px]">
-        <div className="flex h-full w-full items-center justify-center rounded-[11px] bg-slate-950 text-sm font-black text-transparent bg-clip-text bg-gradient-to-tr from-violet-400 to-cyan-300">
+      <div className="h-9 w-9 shrink-0 rounded-xl bg-vanilla p-[1px]">
+        <div className="flex h-full w-full items-center justify-center rounded-[11px] bg-white text-sm font-black text-blood bg-vanilla ">
           CS
         </div>
       </div>
-      <span className="bg-gradient-to-r from-violet-400 to-cyan-300 bg-clip-text text-lg font-bold text-transparent">
+      <span className="bg-vanilla text-lg font-bold text-blood">
         ClubSphere
       </span>
     </>
   )
 
   return (
-    <div className="flex min-h-dvh flex-col bg-slate-950 text-slate-100 lg:flex-row">
+    <div className="flex min-h-dvh flex-col bg-white text-bean lg:flex-row">
       {/* Mobile top bar */}
-      <header className="sticky top-0 z-30 flex min-h-14 items-center gap-3 border-b border-slate-800/80 bg-slate-950/90 px-3 pt-[env(safe-area-inset-top)] backdrop-blur lg:hidden">
+      <header className="sticky top-0 z-30 flex min-h-14 items-center gap-3 border-b border-rose/30 bg-white px-3 pt-[env(safe-area-inset-top)] backdrop-blur lg:hidden">
         <button
           ref={menuButtonRef}
           type="button"
@@ -125,19 +125,19 @@ export default function Layout() {
           aria-label="Open navigation menu"
           aria-expanded={menuOpen}
           aria-controls="app-sidebar"
-          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-800 text-slate-300 transition hover:border-slate-700 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500 cursor-pointer"
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-rose/30 text-bean transition hover:border-rose/30 hover:text-bean focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blood cursor-pointer"
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="h-5 w-5" aria-hidden="true">
             <path d="M4 7h16M4 12h16M4 17h16" />
           </svg>
         </button>
         <div className="flex min-w-0 items-center gap-2">
-          <div className="h-8 w-8 shrink-0 rounded-lg bg-gradient-to-tr from-violet-600 via-indigo-600 to-cyan-400 p-[1px]">
-            <div className="flex h-full w-full items-center justify-center rounded-[7px] bg-slate-950 text-xs font-black text-transparent bg-clip-text bg-gradient-to-tr from-violet-400 to-cyan-300">
+          <div className="h-8 w-8 shrink-0 rounded-lg bg-vanilla p-[1px]">
+            <div className="flex h-full w-full items-center justify-center rounded-[7px] bg-white text-xs font-black text-blood bg-vanilla ">
               CS
             </div>
           </div>
-          <span className="truncate text-base font-bold text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-300">
+          <span className="truncate text-base font-bold text-blood bg-vanilla ">
             ClubSphere
           </span>
         </div>
@@ -147,7 +147,7 @@ export default function Layout() {
       <div
         onClick={closeMenu}
         aria-hidden="true"
-        className={`fixed inset-0 z-40 bg-slate-950/70 backdrop-blur-sm transition-opacity duration-300 lg:hidden ${
+        className={`fixed inset-0 z-40 bg-white backdrop-blur-sm transition-opacity duration-300 lg:hidden ${
           menuOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
         }`}
       />
@@ -157,18 +157,18 @@ export default function Layout() {
         id="app-sidebar"
         ref={sidebarRef}
         aria-label="Primary navigation"
-        className={`fixed inset-y-0 left-0 z-50 flex w-72 max-w-[85vw] flex-col border-r border-slate-800/80 bg-slate-950/95 backdrop-blur transition-[transform,visibility] duration-300 ease-out lg:sticky lg:top-0 lg:z-auto lg:h-dvh lg:w-64 lg:max-w-none lg:translate-x-0 lg:visible ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-72 max-w-[85vw] flex-col border-r border-rose/30 bg-white backdrop-blur transition-[transform,visibility] duration-300 ease-out lg:sticky lg:top-0 lg:z-auto lg:h-dvh lg:w-64 lg:max-w-none lg:translate-x-0 lg:visible ${
           menuOpen ? 'visible translate-x-0' : 'invisible -translate-x-full'
         }`}
       >
-        <div className="flex h-16 items-center gap-3 border-b border-slate-800/80 px-5 pt-[env(safe-area-inset-top)]">
+        <div className="flex h-16 items-center gap-3 border-b border-rose/30 px-5 pt-[env(safe-area-inset-top)]">
           {brand}
           <button
             ref={closeButtonRef}
             type="button"
             onClick={closeMenu}
             aria-label="Close navigation menu"
-            className="ml-auto flex h-10 w-10 items-center justify-center rounded-xl text-slate-400 transition hover:bg-slate-900 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500 cursor-pointer lg:hidden"
+            className="ml-auto flex h-10 w-10 items-center justify-center rounded-xl text-olive transition hover:bg-white hover:text-bean focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blood cursor-pointer lg:hidden"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="h-5 w-5" aria-hidden="true">
               <path d="M6 6l12 12M18 6L6 18" />
@@ -186,7 +186,7 @@ export default function Layout() {
 
           {ADMIN_ROLES.has(user?.role ?? '') && (
             <>
-              <div className="my-3 border-t border-slate-800/80" />
+              <div className="my-3 border-t border-rose/30" />
               <NavLink to="/admin" onClick={() => setMenuOpen(false)} className={linkClass}>
                 <span aria-hidden className="text-base">🛡️</span>
                 Admin Dashboard
@@ -195,21 +195,21 @@ export default function Layout() {
           )}
         </nav>
 
-        <div className="border-t border-slate-800/80 p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+        <div className="border-t border-rose/30 p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-tr from-violet-600 to-cyan-500 text-xs font-bold text-white">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-vanilla text-xs font-bold text-bean">
               {initials}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-semibold text-white">{user?.full_name}</p>
-              <p className="truncate text-xs text-slate-500">
+              <p className="truncate text-sm font-semibold text-bean">{user?.full_name}</p>
+              <p className="truncate text-xs text-olive">
                 {ROLE_LABEL[user?.role ?? ''] ?? user?.role}
               </p>
             </div>
           </div>
           <button
             onClick={() => void handleLogout()}
-            className="mt-3 min-h-11 w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-xs font-medium text-slate-300 transition hover:border-rose-500/40 hover:text-rose-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500 cursor-pointer"
+            className="mt-3 min-h-11 w-full rounded-lg border border-rose/30 bg-white px-3 py-2 text-xs font-medium text-bean transition hover:border-blood/40 hover:text-blood focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blood cursor-pointer"
           >
             Sign out
           </button>
